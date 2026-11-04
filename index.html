@@ -121,6 +121,8 @@ input{font:inherit}
 .sheet.show{transform:translateY(0)}
 .sheet .grab{padding:12px 0 8px;display:flex;justify-content:center;touch-action:none;cursor:grab}
 .sheet .grab i{width:40px;height:4px;border-radius:2px;background:var(--asa)}
+.sheet.res .grab{padding:14px 0 12px}.sheet.res .hd{touch-action:none;cursor:grab}
+.sheet.peek{transform:translateY(calc(100% - 132px - env(safe-area-inset-bottom)))}
 .sheet .body{padding:0 var(--s-lg);overflow-y:auto;display:flex;flex-direction:column;gap:var(--s-md)}
 .sheet .foot{padding:var(--s-sm) var(--s-lg) calc(var(--s-xl) + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:var(--s-xs)}
 .face{width:64px;height:64px;border-radius:50%;flex:none;display:grid;place-items:center;color:#fff}
@@ -392,16 +394,16 @@ function buildSheet(s,r,fromHist){
    const sty={'Contiene':['var(--red-b)',I.x('#b42318',9),'var(--red-t)'],'Puede contener':['var(--amb-b)',I.warn('#a15c00'),'var(--amb-t)']};
    rows=all.length?all.map(([l,st,m])=>`<div class="arow"><span class="dot" style="background:${sty[st][0]}">${sty[st][1]}</span><span class="grow" style="font-size:15px;font-weight:700">${esc(l)}${m?'<span class="mine">tuya</span>':''}</span><span style="font-size:13px;font-weight:700;color:${sty[st][2]}">${st}</span></div>`).join(''):`<div class="arow"><span class="dot" style="background:var(--grn-b)">${I.check('#1c7a47')}</span><span class="grow" style="font-size:15px;font-weight:700">Ningún alérgeno declarado</span></div>`;}
   $('#veil').classList.add('show');
-  const sh=document.createElement('div');sh.className='sheet';
+  const sh=document.createElement('div');sh.className='sheet res';
   sh.innerHTML=`<div class="grab"><i></i></div><div class="body">
-    <div class="row" style="gap:16px">${face(v)}<div class="grow"><h2 class="h-sheet" style="color:${col[0]}">${title}</h2><div class="t-detail">${s.unknown?'No hay coincidencias':esc(s.name)+(s.brand?' · '+esc(s.brand):'')}</div></div></div>
+    <div class="row hd" style="gap:16px">${face(v)}<div class="grow"><h2 class="h-sheet" style="color:${col[0]}">${title}</h2><div class="t-detail">${s.unknown?'No hay coincidencias':esc(s.name)+(s.brand?' · '+esc(s.brand):'')}</div></div></div>
     <div class="reason" style="background:${col[1]};color:${col[0]}">${reason}</div>
     ${s.unknown?`<div><p class="overline">Para la próxima foto</p><div class="t-body" style="color:var(--tx)">• Acércate y evita los reflejos del vidrio<br>• Que se vea el nombre del empaque</div></div>`:
     `<div><p class="overline">Alérgenos de este snack</p><div>${rows}</div></div>
      <details><summary class="link">Ver ingredientes</summary><p class="t-detail" style="margin:4px 0 0">${esc(s.ing||"Sin detalle de ingredientes.")}</p></details>
      <div class="row t-cap" style="gap:6px">${I.spark('#5e574e')} ${s.ai?(s.via==='gemini'?'Identificado con IA a partir de tu foto':'Identificado por Claude a partir de tu foto'):'Modo demo · producto elegido por el entrevistador'}</div>${s.ai&&s.conf&&s.conf!=='alta'?'<div class="hint">'+I.warn('#a15c00')+' Confianza '+esc(s.conf)+': confirma con la etiqueta del empaque.</div>':''}`}
   </div><div class="foot">${fromHist?'<button class="btn btn-p" data-act="again">Escanear otro snack</button><button class="btn btn-s" data-act="back-hist">Volver</button>':s.unknown?'<button class="btn btn-p" data-act="again">Tomar otra foto</button><button class="btn btn-s" data-act="gallery">Elegir de la galería</button>':'<button class="btn btn-p" data-act="again">Escanear otro snack</button><button class="btn btn-s" data-go="inicio">Volver al inicio</button>'}</div>`;
-  bind(sh);requestAnimationFrame(()=>requestAnimationFrame(()=>sh.classList.add('show')));
+  bind(sh);dragResult(sh,fromHist);requestAnimationFrame(()=>requestAnimationFrame(()=>sh.classList.add('show')));
   return sh;
 }
 function dateNow(){const d=new Date();return d.toLocaleDateString('es-PE',{day:'numeric',month:'short'})+', '+timeNow()}
@@ -409,6 +411,19 @@ function shrink(url,max,square){return new Promise(res=>{if(!url)return res(null
   if(square){const m=Math.min(im.naturalWidth,im.naturalHeight);c.width=c.height=max;ctx.drawImage(im,(im.naturalWidth-m)/2,(im.naturalHeight-m)/2,m,m,0,0,max,max)}
   else{const k=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight));c.width=im.naturalWidth*k;c.height=im.naturalHeight*k;ctx.drawImage(im,0,0,c.width,c.height)}
   res(c.toDataURL('image/jpeg',square?.7:.6))}catch(e){res(null)}};im.onerror=()=>res(null);im.src=url})}
+function dragResult(sh,fromHist){
+  const veil=$('#veil');let y0=null,dy=0,h=0,base=0,moved=false;
+  const setPeek=on=>{sh.style.transform='';sh.style.transition='';sh.classList.toggle('peek',on);if(veil)veil.classList.toggle('show',!on)};
+  sh.querySelectorAll('.grab,.hd').forEach(g=>{
+    g.addEventListener('pointerdown',e=>{y0=e.clientY;dy=0;moved=false;h=sh.offsetHeight;base=sh.classList.contains('peek')?h-132:0;sh.style.transition='none';try{g.setPointerCapture(e.pointerId)}catch(_){}});
+    g.addEventListener('pointermove',e=>{if(y0===null)return;dy=e.clientY-y0;if(Math.abs(dy)>4)moved=true;const y=Math.max(0,Math.min(h,base+dy));sh.style.transform='translateY('+y+'px)'});
+    const end=()=>{if(y0===null)return;y0=null;const peek=sh.classList.contains('peek');
+      if(!moved){setPeek(!peek);return}
+      if(fromHist&&(peek?dy>40:dy>h*0.6)){sh.style.transition='';sh.style.transform='translateY(100%)';setTimeout(()=>go(histFrom),300);return}
+      if(dy>60)setPeek(true);else if(dy<-40)setPeek(false);else setPeek(peek)};
+    g.addEventListener('pointerup',end);g.addEventListener('pointercancel',end);
+  });
+}
 let histFrom='inicio';
 function openHist(id){
   const h=S.history.find(x=>String(x.id)===String(id));if(!h)return;
