@@ -368,7 +368,7 @@ function analyze(url){
   const cam=$('#cam');const v=cam.querySelector('video');if(v)v.remove();const fb=$('#fb');if(fb)fb.remove();
   let img=cam.querySelector('.shot');if(!img){img=document.createElement('img');img.className='shot';cam.prepend(img)}img.src=url;
   cam.querySelectorAll('.cam-hint,.cam-bottom,.finder').forEach(n=>n.style.display='none');
-  const a=document.createElement('div');a.className='analyzing';a.innerHTML='<div class="spin"></div><span>Analizando con IA…</span><span style="font-weight:400;font-size:13px;opacity:.85">Leyendo el empaque y sus alérgenos</span>';cam.appendChild(a);
+  const a=document.createElement('div');a.className='analyzing';a.innerHTML='<div class="spin"></div><span>Analizando…</span><span style="font-weight:400;font-size:13px;opacity:.85">Leyendo el empaque y sus alérgenos</span>';cam.appendChild(a);
   const t0=Date.now();
   recognize(url).then(p=>{setTimeout(()=>{a.remove();showResult(p)},Math.max(0,1000-(Date.now()-t0)))});
 }
@@ -401,7 +401,7 @@ function buildSheet(s,r,fromHist){
     ${s.unknown?`<div><p class="overline">Para la próxima foto</p><div class="t-body" style="color:var(--tx)">• Acércate y evita los reflejos del vidrio<br>• Que se vea el nombre del empaque</div></div>`:
     `<div><p class="overline">Alérgenos de este snack</p><div>${rows}</div></div>
      <details><summary class="link">Ver ingredientes</summary><p class="t-detail" style="margin:4px 0 0">${esc(s.ing||"Sin detalle de ingredientes.")}</p></details>
-     <div class="row t-cap" style="gap:6px">${I.spark('#5e574e')} ${s.ai?(s.via==='gemini'?'Identificado con IA a partir de tu foto':'Identificado por Claude a partir de tu foto'):'Modo demo · producto elegido por el entrevistador'}</div>${s.ai&&s.conf&&s.conf!=='alta'?'<div class="hint">'+I.warn('#a15c00')+' Confianza '+esc(s.conf)+': confirma con la etiqueta del empaque.</div>':''}`}
+     <div class="row t-cap" style="gap:6px">${I.spark('#5e574e')} ${s.ai?(s.via==='gemini'?'Identificado a partir de tu foto':'Identificado por Claude a partir de tu foto'):'Modo demo · producto elegido por el entrevistador'}</div>${s.ai&&s.conf&&s.conf!=='alta'?'<div class="hint">'+I.warn('#a15c00')+' Confianza '+esc(s.conf)+': confirma con la etiqueta del empaque.</div>':''}`}
   </div><div class="foot">${fromHist?'<button class="btn btn-p" data-act="again">Escanear otro snack</button><button class="btn btn-s" data-act="back-hist">Volver</button>':s.unknown?'<button class="btn btn-p" data-act="again">Tomar otra foto</button><button class="btn btn-s" data-act="gallery">Elegir de la galería</button>':'<button class="btn btn-p" data-act="again">Escanear otro snack</button><button class="btn btn-s" data-go="inicio">Volver al inicio</button>'}</div>`;
   bind(sh);dragResult(sh,fromHist);requestAnimationFrame(()=>requestAnimationFrame(()=>sh.classList.add('show')));
   return sh;
@@ -414,6 +414,7 @@ function shrink(url,max,square){return new Promise(res=>{if(!url)return res(null
 function dragResult(sh,fromHist){
   const veil=$('#veil');let y0=null,dy=0,h=0,base=0,moved=false;
   const setPeek=on=>{sh.style.transform='';sh.style.transition='';sh.classList.toggle('peek',on);if(veil)veil.classList.toggle('show',!on)};
+  if(veil)veil.onclick=()=>setPeek(true);const shot=$('#cam .shot');if(shot)shot.onclick=()=>{if(sh.classList.contains('peek'))setPeek(false)};
   sh.querySelectorAll('.grab,.hd').forEach(g=>{
     g.addEventListener('pointerdown',e=>{y0=e.clientY;dy=0;moved=false;h=sh.offsetHeight;base=sh.classList.contains('peek')?h-132:0;sh.style.transition='none';try{g.setPointerCapture(e.pointerId)}catch(_){}});
     g.addEventListener('pointermove',e=>{if(y0===null)return;dy=e.clientY-y0;if(Math.abs(dy)>4)moved=true;const y=Math.max(0,Math.min(h,base+dy));sh.style.transform='translateY('+y+'px)'});
@@ -430,7 +431,7 @@ function openHist(id){
   if(!h.p){toast('Este escaneo es antiguo y no guardó el detalle');return}
   histFrom=view;stopCam();view='detalle';
   phone.innerHTML=`<div class="view" id="cam">${h.big||h.photo?`<img class="shot" src="${h.big||h.photo}" alt="">`:''}<div class="cam-top"><button class="cbtn" data-act="back-hist" aria-label="Volver">${I.x('#fff',12)}</button><span class="cam-title">${esc(h.time)}</span><span style="width:44px"></span></div><div class="veil" id="veil"></div></div>`;
-  bind(phone);$('#veil').onclick=()=>go(histFrom);
+  bind(phone);
   $('#cam').appendChild(buildSheet(h.p,h.r,true));
 }
 function thumbOf(url){if(!url)return null;try{const im=new Image();im.src=url;const c=document.createElement('canvas');c.width=72;c.height=72;const ctx=c.getContext('2d');if(im.complete&&im.naturalWidth){const m=Math.min(im.naturalWidth,im.naturalHeight);ctx.drawImage(im,(im.naturalWidth-m)/2,(im.naturalHeight-m)/2,m,m,0,0,72,72);return c.toDataURL('image/jpeg',.7)}}catch(e){}return null}
