@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f4ef">
+<title>AlergiCheck · Máquina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f4ef;--sup:#ffffff;--sutil:#efebe5;--hero:#f1e6df;
+  --brand:#7a4a35;--brand-d:#5f3926;--brand-s:#f3e9e2;
+  --tx:#1b1916;--tx2:#5e574e;--tx3:#776f65;--inv:#ffffff;
+  --bd:#e5dfd6;--bd-f:#1b1916;
+  --red:#b42318;--red-t:#8a1c12;--red-b:#fcebe8;
+  --grn:#1c7a47;--grn-t:#135532;--grn-b:#e3f2e8;
+  --amb:#a15c00;--amb-t:#6e3f00;--amb-b:#fbefd8;
+  --s-2xs:4px;--s-xs:8px;--s-sm:12px;--s-md:16px;--s-lg:20px;--s-xl:24px;--s-2xl:32px;
+  --r-sm:8px;--r-md:14px;--r-lg:20px;--r-full:999px;
+  --out:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#2b2724;font-family:Inter,system-ui,-apple-system,sans-serif;color:var(--tx);-webkit-font-smoothing:antialiased}
+::selection{background:var(--brand-s);color:var(--brand-d)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+#phone{position:relative;width:100%;max-width:430px;height:100dvh;margin:0 auto;background:var(--bg);overflow:hidden}
+@media (min-width:520px){#phone{height:min(852px,calc(100dvh - 32px));margin-top:16px;border-radius:32px;box-shadow:0 24px 64px rgba(0,0,0,.45)}}
+.view{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);animation:enter .28s var(--out)}
+@keyframes enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--bd) transparent}
+
+/* ---------- barra superior ---------- */
+.top{display:flex;align-items:center;justify-content:space-between;gap:var(--s-sm);padding:calc(var(--s-md) + env(safe-area-inset-top)) var(--s-md) 0}
+.brand{display:flex;align-items:center;gap:var(--s-xs);font-weight:700;font-size:16px;letter-spacing:-.01em}
+.brand .logo{width:28px;height:28px;border-radius:8px;background:var(--brand);display:grid;place-items:center}
+.where{font-size:12px;color:var(--tx2);text-align:right}
+
+/* ---------- reposo ---------- */
+#rest{cursor:pointer}
+.rest-body{flex:1;display:flex;flex-direction:column;padding:0 var(--s-md);min-height:0}
+.rest-h{font-size:34px;line-height:38px;font-weight:800;letter-spacing:-.03em;margin:44px 0 var(--s-sm);text-wrap:balance}
+.rest-p{font-size:15px;line-height:22px;color:var(--tx2);margin:0;max-width:30ch}
+.icons-row{display:flex;justify-content:space-between;margin:32px 0 0}
+.ic-b{display:flex;flex-direction:column;align-items:center;gap:6px;width:62px;font-size:11.5px;font-weight:600;color:var(--tx)}
+.ic-b .c{width:52px;height:52px;border-radius:50%;background:var(--sup);border:1px solid var(--bd);display:grid;place-items:center;color:var(--brand)}
+.ic-b.more .c{background:var(--brand-s);border-color:transparent;font-size:14px;font-weight:700}
+.ghost{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s-xs);margin-top:auto;padding-top:var(--s-xl);-webkit-mask-image:linear-gradient(to bottom,#000 10%,transparent 95%);mask-image:linear-gradient(to bottom,#000 10%,transparent 95%);opacity:.75;pointer-events:none}
+.rest-foot{padding:var(--s-sm) var(--s-md) calc(var(--s-lg) + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:var(--s-sm)}
+.start{display:flex;align-items:center;justify-content:center;gap:var(--s-sm);width:100%;min-height:60px;border-radius:var(--r-md);background:var(--brand);color:var(--inv);font-size:18px;font-weight:700;box-shadow:0 6px 16px rgba(27,25,22,.18);animation:breathe 2.8s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(1.015)}}
+.verified{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tx2);line-height:16px}
+
+/* ---------- catálogo ---------- */
+.cat-head{padding:var(--s-md) var(--s-md) var(--s-sm)}
+.cat-h{font-size:24px;line-height:30px;font-weight:800;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.cat-p{font-size:13px;line-height:18px;color:var(--tx2);margin:4px 0 0;min-height:18px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s-xs);padding:0 var(--s-md) var(--s-md)}
+.shelf{grid-column:1/-1;display:flex;align-items:center;gap:var(--s-xs);font-size:11px;font-weight:700;color:var(--tx3);margin:var(--s-xs) 0 -2px}
+.shelf::after{content:"";flex:1;height:1px;background:var(--bd)}
+.slot{position:relative;display:flex;flex-direction:column;align-items:stretch;text-align:left;min-height:148px;padding:var(--s-xs);border-radius:var(--r-md);background:var(--sup);border:1px solid var(--bd);
+  transition:opacity .35s var(--out) calc(var(--i)*28ms),border-color .35s var(--out) calc(var(--i)*28ms),box-shadow .35s var(--out) calc(var(--i)*28ms),background .35s var(--out) calc(var(--i)*28ms),transform .15s}
+.slot:active{transform:scale(.97)}
+.slot .hd{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.code{display:inline-grid;place-items:center;min-width:28px;height:22px;padding:0 6px;border-radius:6px;background:var(--tx);color:var(--inv);font-size:12px;font-weight:700;transition:background .35s var(--out) calc(var(--i)*28ms)}
+.price{font-size:12px;font-weight:600;color:var(--tx2);white-space:nowrap}
+.art{display:grid;place-items:center;height:48px;margin:6px 0 4px;transition:filter .35s var(--out) calc(var(--i)*28ms),opacity .35s var(--out) calc(var(--i)*28ms)}
+.nm{font-size:13px;line-height:16px;font-weight:600;min-height:32px;text-decoration:line-through;text-decoration-color:transparent;text-decoration-thickness:1.5px;transition:color .35s var(--out) calc(var(--i)*28ms),text-decoration-color .35s var(--out) calc(var(--i)*28ms)}
+.st{margin-top:auto;padding-top:6px;min-height:28px;display:flex;align-items:flex-end}
+.dots{display:flex;gap:4px;align-items:center}
+.dot{width:22px;height:22px;border-radius:50%;background:var(--sutil);display:grid;place-items:center;color:var(--tx)}
+.tr{font-size:11px;font-weight:600;color:var(--tx2)}
+.none{font-size:11.5px;color:var(--tx2)}
+.pend{font-size:11.5px;font-weight:700;color:var(--amb-t)}
+.pill{display:inline-flex;align-items:center;gap:4px;max-width:100%;padding:3px 8px;border-radius:var(--r-full);font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:pop .3s var(--out) calc(var(--i)*28ms) both}
+@keyframes pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.pill svg{flex:none}
+.p-ok{background:var(--grn-b);color:var(--grn-t)}
+.p-tr{background:var(--amb-b);color:var(--amb-t)}
+.p-no{background:var(--red-b);color:var(--red-t)}
+.p-nd{background:var(--sutil);color:var(--tx2)}
+/* estados filtrados */
+.slot.ok{border:2px solid var(--grn);box-shadow:0 2px 10px rgba(28,122,71,.14);padding:7px}
+.slot.tr{border:2px solid var(--amb);padding:7px}
+.slot.no,.slot.nd{background:#fbfaf8}
+.slot.no .art,.slot.nd .art{filter:grayscale(1);opacity:.4}
+.slot.no .nm{color:var(--tx3);text-decoration-color:var(--red)}
+.slot.nd .nm{color:var(--tx3)}
+.slot.no .code,.slot.nd .code{background:#a49c92}
+.slot.no .price,.slot.nd .price{color:var(--tx3)}
+.slot.lit{animation:lit .7s var(--out) calc(var(--i)*28ms)}
+@keyframes lit{0%{box-shadow:0 0 0 0 rgba(28,122,71,.45)}100%{box-shadow:0 0 0 10px rgba(28,122,71,0),0 2px 10px rgba(28,122,71,.14)}}
+
+/* filtro inferior */
+.filters{background:var(--sup);border-top:1px solid var(--bd);padding:var(--s-sm) 0 calc(var(--s-sm) + env(safe-area-inset-bottom));box-shadow:0 -6px 18px rgba(27,25,22,.06)}
+.f-hd{display:flex;align-items:center;justify-content:space-between;padding:0 var(--s-md);min-height:28px}
+.f-t{font-size:14px;font-weight:700}
+.f-t .n{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;margin-left:6px;border-radius:var(--r-full);background:var(--brand);color:var(--inv);font-size:11px;vertical-align:1px}
+.clear{font-size:13px;font-weight:700;color:var(--brand);min-height:36px;padding:0 2px;transition:opacity .2s}
+.clear[disabled]{opacity:0;pointer-events:none}
+.f-row{display:flex;gap:var(--s-xs);overflow-x:auto;padding:var(--s-xs) var(--s-md) 2px;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-mask-image:linear-gradient(to right,#000 88%,transparent);mask-image:linear-gradient(to right,#000 88%,transparent)}
+.f-row::-webkit-scrollbar{display:none}
+.f-row.end{-webkit-mask-image:none;mask-image:none}
+.fb{flex:none;scroll-snap-align:start;width:76px;min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:12px;border:1.5px solid var(--tx);background:var(--sup);font-size:11.5px;font-weight:700;line-height:14px;text-align:center;padding:6px 4px;transition:background .2s var(--out),color .2s var(--out),border-color .2s var(--out),transform .12s}
+.fb:active{transform:scale(.95)}
+.fb[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--inv)}
+
+/* ---------- ficha ---------- */
+.f-top{display:flex;align-items:center;justify-content:space-between;padding:calc(var(--s-md) + env(safe-area-inset-top)) var(--s-md) 0}
+.back{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 18px 0 14px;border:1.5px solid var(--tx);border-radius:12px;background:var(--sup);font-size:15px;font-weight:700}
+.timer{font-size:12px;color:var(--tx2)}
+.timer b{font-weight:700;color:var(--tx)}
+.ficha{padding:var(--s-md);display:flex;flex-direction:column;gap:var(--s-md)}
+.hero{display:flex;align-items:center;gap:var(--s-md);padding:var(--s-lg) var(--s-md);border-radius:var(--r-lg);background:var(--hero)}
+.hero .big{flex:none;width:112px;display:grid;place-items:center}
+.hero .code{height:30px;min-width:44px;font-size:17px;border-radius:8px}
+.hero h2{font-size:20px;line-height:24px;font-weight:800;letter-spacing:-.01em;margin:10px 0 2px}
+.hero .meta{font-size:12.5px;color:var(--tx2)}
+.hero .pr{font-size:18px;font-weight:800;margin-top:8px}
+.verdict{display:flex;gap:var(--s-sm);align-items:flex-start;padding:var(--s-md);border-radius:var(--r-lg);animation:enter .35s var(--out) .05s both}
+.verdict .vi{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center}
+.verdict h3{font-size:20px;line-height:24px;font-weight:800;margin:0 0 2px}
+.verdict p{margin:0;font-size:13.5px;line-height:19px}
+.v-ok{background:var(--grn-b)}.v-ok .vi{background:var(--grn)}.v-ok h3{color:var(--grn-t)}.v-ok p{color:var(--grn-t)}
+.v-tr{background:var(--amb-b)}.v-tr .vi{background:var(--amb)}.v-tr h3{color:var(--amb-t)}.v-tr p{color:var(--amb-t)}
+.v-no{background:var(--red-b)}.v-no .vi{background:var(--red)}.v-no h3{color:var(--red-t)}.v-no p{color:var(--red-t)}
+.v-ne{background:var(--sup);border:1px solid var(--bd)}.v-ne .vi{background:var(--brand-s)}.v-ne h3{color:var(--tx)}.v-ne p{color:var(--tx2)}
+.sec-h{font-size:15px;font-weight:700;margin:var(--s-xs) 0 calc(-1 * var(--s-xs))}
+.table{background:var(--sup);border:1px solid var(--bd);border-radius:var(--r-md);padding:0 var(--s-md)}
+.ar{display:flex;align-items:center;gap:var(--s-sm);min-height:48px;border-bottom:1px solid var(--bd);font-size:14.5px}
+.ar:last-child{border-bottom:0}
+.ar .nmx{display:flex;align-items:center;gap:var(--s-xs);flex:1;min-width:0}
+.ar.mine .nmx{font-weight:700}
+.evit{font-size:10.5px;font-weight:700;color:var(--brand);background:var(--brand-s);border-radius:var(--r-full);padding:2px 7px}
+.res{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;white-space:nowrap}
+.r-ok{color:var(--grn-t)}.r-tr{color:var(--amb-t)}.r-no{color:var(--red-t)}.r-nd{color:var(--tx3);font-weight:600}
+.rest-note{font-size:12.5px;color:var(--tx2);padding:10px 0 12px;border-top:1px solid var(--bd);line-height:17px}
+.ing h4{font-size:14px;font-weight:700;margin:0 0 4px}
+.ing p{font-size:13px;line-height:19px;color:var(--tx2);margin:0}
+.ver2{display:flex;gap:6px;align-items:center;font-size:12px;font-weight:600;color:var(--tx);margin-top:var(--s-xs)}
+.f-foot{padding:var(--s-sm) var(--s-md) calc(var(--s-md) + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:var(--s-xs);background:var(--bg)}
+.buy{display:flex;align-items:center;gap:var(--s-sm);padding:var(--s-sm) var(--s-sm) var(--s-sm) var(--s-md);border-radius:var(--r-md);background:var(--brand);color:var(--inv)}
+.buy p{flex:1;margin:0;font-size:13.5px;line-height:18px}
+.buy .key{flex:none;display:grid;place-items:center;min-width:72px;height:52px;padding:0 10px;border-radius:10px;background:var(--sup);color:var(--tx);font-size:28px;font-weight:800;letter-spacing:-.02em}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;border-radius:var(--r-md);font-size:15.5px;font-weight:700;transition:transform .12s,background .2s}
+.btn:active{transform:scale(.98)}
+.btn-p{background:var(--brand);color:var(--inv)}
+.btn-s{background:var(--sup);color:var(--tx);border:1.5px solid var(--tx)}
+
+/* ---------- enviado ---------- */
+.done{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:var(--s-md) var(--s-lg)}
+.halo{width:112px;height:112px;border-radius:50%;background:var(--grn-b);display:grid;place-items:center;animation:halo .6s var(--out)}
+.halo span{width:76px;height:76px;border-radius:50%;background:var(--grn);display:grid;place-items:center}
+@keyframes halo{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+.done h2{font-size:28px;line-height:32px;font-weight:800;letter-spacing:-.02em;margin:var(--s-xl) 0 var(--s-xs);text-wrap:balance}
+.done p{font-size:14.5px;line-height:21px;color:var(--tx2);margin:0;max-width:30ch}
+.tip{display:flex;gap:var(--s-sm);text-align:left;margin-top:var(--s-xl);padding:var(--s-md);border:1px solid var(--bd);border-radius:var(--r-md);background:var(--sup);width:100%}
+.tip b{display:block;font-size:14px;margin-bottom:2px}
+.tip span{font-size:13px;line-height:18px;color:var(--tx2)}
+
+/* ---------- aviso inactividad ---------- */
+.idle{position:absolute;left:var(--s-md);right:var(--s-md);bottom:calc(150px + env(safe-area-inset-bottom));z-index:20;display:flex;align-items:center;gap:var(--s-sm);padding:var(--s-sm) var(--s-md);border-radius:var(--r-md);background:var(--tx);color:var(--inv);box-shadow:0 10px 30px rgba(0,0,0,.3);transform:translateY(20px);opacity:0;pointer-events:none;transition:transform .3s var(--out),opacity .3s var(--out)}
+.idle.show{transform:none;opacity:1;pointer-events:auto}
+.idle p{flex:1;margin:0;font-size:13px;line-height:18px}
+.idle b{font-size:15px}
+.idle button{flex:none;min-height:40px;padding:0 14px;border-radius:10px;background:var(--sup);color:var(--tx);font-size:13px;font-weight:700}
+.idle.low{bottom:calc(96px + env(safe-area-inset-bottom))}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0ms!important}}
+</style>
+</head>
+<body>
+<div id="phone" aria-live="polite"></div>
+<script>
+/* =========================================================
+   AlergiCheck · Prototipo 8 · Pantalla de la máquina
+   Datos de demostración: productos, precios y fichas ficticios.
+   ========================================================= */
+const ALG=[['lacteos','Lácteos'],['gluten','Gluten'],['huevo','Huevo'],['mani','Maní'],['frutos-secos','Frutos secos'],['soya','Soya'],['pescado','Pescado'],['mariscos','Mariscos'],['moluscos','Moluscos'],['ajonjoli','Ajonjolí'],['mostaza','Mostaza'],['apio','Apio'],['sulfitos','Sulfitos'],['altramuz','Altramuz']];
+const AN=Object.fromEntries(ALG);
+const G={ /* íconos de alérgenos, trazo 1.7, 20×20 */
+ 'lacteos':'<path d="M8 2h4M8.5 2v3L6.5 8v9.5h7V8l-2-3V2"/><path d="M6.5 11.5h7"/>',
+ 'gluten':'<path d="M10 18V6.5"/><path d="M10 10.5c-2.4 0-3.6-1.4-3.6-3.4 2.4 0 3.6 1.4 3.6 3.4zM10 10.5c2.4 0 3.6-1.4 3.6-3.4-2.4 0-3.6 1.4-3.6 3.4zM10 14.5c-2.4 0-3.6-1.4-3.6-3.4 2.4 0 3.6 1.4 3.6 3.4zM10 14.5c2.4 0 3.6-1.4 3.6-3.4-2.4 0-3.6 1.4-3.6 3.4zM10 6.5c-1.1-1.1-1.1-2.9 0-4.3 1.1 1.4 1.1 3.2 0 4.3z"/>',
+ 'huevo':'<path d="M10 2.5c3 0 5.5 5 5.5 9a5.5 5.5 0 0 1-11 0c0-4 2.5-9 5.5-9z"/>',
+ 'mani':'<path d="M10 2.5a3.5 3.5 0 0 1 3.5 3.5c0 1.6-.9 2.3-.9 4s.9 2.4.9 4a3.5 3.5 0 0 1-7 0c0-1.6.9-2.3.9-4s-.9-2.4-.9-4A3.5 3.5 0 0 1 10 2.5z"/><path d="M8.6 6.2h.01M11.2 13.6h.01" stroke-width="2.2"/>',
+ 'frutos-secos':'<path d="M10 2.5c3 3 4.5 6 4.5 9a4.5 4.5 0 0 1-9 0c0-3 1.5-6 4.5-9z"/><path d="M10 7.5v8"/>',
+ 'soya':'<path d="M3 16c1.6-7 7.4-11.4 14-12-1 7.2-7 12.6-14 12z"/><circle cx="7.6" cy="12.6" r="1.2"/><circle cx="10.6" cy="9.8" r="1.2"/><circle cx="13.6" cy="7" r="1.2"/>',
+ 'pescado':'<path d="M2.5 10c2.6-4 8-5 11.4-2l3.6-2.6v9.2L13.9 12c-3.4 3-8.8 2-11.4-2z"/><path d="M6.4 9.4h.01" stroke-width="2.2"/>',
+ 'mariscos':'<path d="M15.5 3.5c-6 0-10.5 3.2-10.5 7.8 0 3 2.3 5.2 5.2 5.2 2.3 0 3.6-1.6 3.6-3.3"/><path d="M15.5 3.5c.8 2.4-.4 5.4-3.6 6.8M8.6 9.4l1.6 1.6M7.2 12.4l2 .6"/>',
+ 'moluscos':'<path d="M10 17L3 8.6C5 4.2 15 4.2 17 8.6z"/><path d="M10 17V6.2M10 17L6.6 7M10 17l3.4-10"/>',
+ 'ajonjoli':'<ellipse cx="6.5" cy="7" rx="1.9" ry="3.1" transform="rotate(-25 6.5 7)"/><ellipse cx="13.4" cy="7.6" rx="1.9" ry="3.1" transform="rotate(22 13.4 7.6)"/><ellipse cx="9.6" cy="14.2" rx="1.9" ry="3.1" transform="rotate(-4 9.6 14.2)"/>',
+ 'mostaza':'<path d="M9 2h2l.6 3H8.4z"/><path d="M7 5h6l1 2.6V17.5H6V7.6z"/><path d="M6 11h8"/>',
+ 'apio':'<path d="M7 18V9.5M10 18V7.5M13 18V9.5"/><path d="M7 9.5C5 8.6 4.2 5.8 5 3.6c1.6 1 2.6 3.4 2 5.9zM13 9.5c2-.9 2.8-3.7 2-5.9-1.6 1-2.6 3.4-2 5.9zM10 7.5C8.5 6 8.5 3.6 10 2c1.5 1.6 1.5 4 0 5.5z"/>',
+ 'sulfitos':'<path d="M6 2.5h8c0 4.2-1.6 7.2-4 7.2S6 6.7 6 2.5zM10 9.7v7.3M7 17.5h6"/><path d="M6.3 5.5h7.4"/>',
+ 'altramuz':'<path d="M5.2 5.2c2.6-2.9 8.2-2.7 10 .6 1.7 3.2-1.4 4.4-1.4 6.8 0 2.6-2.6 5-5.6 3.9S2.6 8.2 5.2 5.2z"/><path d="M8.2 6.6c1.2-.6 2.6-.5 3.6.3"/>'
+};
+const ic=(k,s=18,c='currentColor')=>`<svg width="${s}" height="${s}" viewBox="0 0 20 20" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${G[k]}</svg>`;
+const I={
+ shield:(c='#fff',s=16)=>`<svg width="${s}" height="${s}" viewBox="0 0 16 18" fill="none" aria-hidden="true"><path d="M8 1l7 2.8v5.1c0 4.2-3 7.6-7 8.8-4-1.2-7-4.6-7-8.8V3.8L8 1z" stroke="${c}" stroke-width="1.8" stroke-linejoin="round"/><path d="M5 9l2.2 2.2L11.2 7" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+ check:(c='#fff',s=12,w=2.2)=>`<svg width="${s}" height="${s}" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7.5l3.5 3.5L12 3.5" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+ x:(c='#fff',s=10,w=2.2)=>`<svg width="${s}" height="${s}" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/></svg>`,
+ warn:(c,s=12)=>`<svg width="${s}" height="${s}" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 1.5l6 10.5H1z" stroke="${c}" stroke-width="1.7" stroke-linejoin="round"/><path d="M7 5.5v2.8M7 10h.01" stroke="${c}" stroke-width="1.7" stroke-linecap="round"/></svg>`,
+ q:(c,s=12)=>`<svg width="${s}" height="${s}" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="${c}" stroke-width="1.5"/><path d="M5.3 5.4a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1M7 10.3h.01" stroke="${c}" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+ grid:(c='#fff')=>`<svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><rect x="2" y="2" width="6" height="6" rx="1" stroke="${c}" stroke-width="2"/><rect x="10" y="2" width="6" height="6" rx="1" stroke="${c}" stroke-width="2"/><rect x="2" y="10" width="6" height="6" rx="1" stroke="${c}" stroke-width="2"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="${c}" stroke-width="2"/></svg>`,
+ back:'<svg width="9" height="15" viewBox="0 0 10 16" fill="none" aria-hidden="true"><path d="M8.5 1.5L2 8l6.5 6.5" stroke="#1b1916" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ keypad:'<svg width="22" height="24" viewBox="0 0 22 24" fill="none" aria-hidden="true"><rect x="2" y="1.5" width="18" height="21" rx="3" stroke="#fff" stroke-width="1.8"/><path d="M6.5 7h.01M11 7h.01M15.5 7h.01M6.5 11.5h.01M11 11.5h.01M15.5 11.5h.01M6.5 16h.01M11 16h.01M15.5 16h.01" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>',
+ flag:'<svg width="16" height="18" viewBox="0 0 16 18" fill="none" aria-hidden="true"><path d="M2 17V1.5M2 2h10l-2 4 2 4H2" stroke="#1b1916" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/></svg>'
+};
+
+/* Ilustraciones de producto (formas planas como en el Figma) */
+const ART={
+ paquete:(c,s)=>`<svg width="${34*s}" height="${44*s}" viewBox="0 0 34 44"><rect x="1.5" y="1.5" width="31" height="41" rx="5" fill="${c}" stroke="#1b1916" stroke-width="1.3"/><circle cx="17" cy="22" r="7" fill="#fff" opacity=".85"/></svg>`,
+ bolsa:(c,s)=>`<svg width="${40*s}" height="${46*s}" viewBox="0 0 40 46"><path d="M3 4h34l-3 6 2 32H5l2-32z" fill="${c}" stroke="#1b1916" stroke-width="1.3" stroke-linejoin="round"/><path d="M3 4h34" stroke="#1b1916" stroke-width="2.2"/><ellipse cx="20" cy="24" rx="8" ry="5.5" fill="#fff" opacity=".85"/></svg>`,
+ galletas:(c,s)=>`<svg width="${46*s}" height="${40*s}" viewBox="0 0 46 40"><circle cx="23" cy="13" r="11" fill="${c}" stroke="#1b1916" stroke-width="1.3"/><circle cx="13" cy="26" r="11" fill="${c}" stroke="#1b1916" stroke-width="1.3"/><circle cx="33" cy="26" r="11" fill="${c}" stroke="#1b1916" stroke-width="1.3"/></svg>`,
+ barra:(c,s)=>`<svg width="${54*s}" height="${22*s}" viewBox="0 0 54 22"><rect x="1.5" y="1.5" width="51" height="19" rx="4" fill="${c}" stroke="#1b1916" stroke-width="1.3"/><rect x="18" y="2.2" width="18" height="17.6" fill="#fff" opacity=".55"/></svg>`,
+ botella:(c,s)=>`<svg width="${24*s}" height="${48*s}" viewBox="0 0 24 48"><rect x="8.5" y="1.5" width="7" height="6" rx="1.5" fill="${c}" stroke="#1b1916" stroke-width="1.3"/><path d="M8.5 7.5L3 15v30.5h18V15l-5.5-7.5z" fill="${c}" stroke="#1b1916" stroke-width="1.3" stroke-linejoin="round"/><rect x="3.6" y="23" width="16.8" height="10" fill="#fff" opacity=".8"/></svg>`,
+ triangulo:(c,s)=>`<svg width="${48*s}" height="${40*s}" viewBox="0 0 48 40"><path d="M24 2L46 38H2z" fill="${c}" stroke="#1b1916" stroke-width="1.3" stroke-linejoin="round"/><path d="M8 30h32" stroke="#fff" stroke-width="3" opacity=".7"/></svg>`
+};
+const art=(p,s=1)=>ART[p.art](p.color,s);
+
+/* Catálogo de la Máquina 03 (demo) */
+const P=[
+ {id:'A1',name:'Galletas de avena',price:2.00,art:'paquete',color:'#e9d6c4',meta:'Dulce · 45 g',c:['gluten'],m:['frutos-secos'],ing:'Harina de trigo, hojuelas de avena, azúcar rubia, aceite vegetal y canela. Elaborado en una planta que procesa frutos secos.'},
+ {id:'A2',name:'Chifles con sal',price:2.50,art:'bolsa',color:'#f3dc8f',meta:'Salado · 50 g',c:[],m:[],ing:'Plátano verde, aceite vegetal y sal de maras.'},
+ {id:'A3',name:'Mix de frutos secos',price:4.50,art:'bolsa',color:'#cfe0bf',meta:'Salado · 60 g',c:['frutos-secos'],m:['mani'],ing:'Almendras, castañas, pecanas y pasas. Puede contener maní.'},
+ {id:'B1',name:'Alfajor de maicena',price:2.00,art:'galletas',color:'#efc4b2',meta:'Dulce · 40 g',c:['lacteos','gluten','huevo'],m:['soya'],ing:'Harina de trigo, maicena, mantequilla, manjar blanco (leche), huevo y azúcar. Puede contener soya.'},
+ {id:'B2',name:'Barra de quinua',price:2.50,art:'barra',color:'#d9cdef',meta:'Dulce · 40 g',c:['ajonjoli'],m:['frutos-secos'],ing:'Quinua inflada, miel de abeja, pasas y ajonjolí. Elaborado en una planta que también procesa frutos secos.'},
+ {id:'B3',name:'Papas al hilo',price:3.00,art:'bolsa',color:'#bfd9ee',meta:'Salado · 45 g',c:[],m:['gluten'],ing:'Papa amarilla, aceite vegetal y sal. Se fríe en la misma línea que productos con trigo.'},
+ {id:'C1',name:'Chocolate con leche',price:3.50,art:'barra',color:'#ecd2b8',meta:'Dulce · 35 g',c:['lacteos','soya'],m:['mani','frutos-secos'],ing:'Azúcar, manteca de cacao, leche en polvo, pasta de cacao y lecitina de soya. Puede contener maní y frutos secos.'},
+ {id:'C2',name:'Galletas de arroz',price:2.50,art:'galletas',color:'#f4e3a1',meta:'Salado · 30 g',c:[],m:[],ing:'Arroz integral inflado y sal marina.'},
+ {id:'C3',name:'Wafer de vainilla',price:1.50,art:'barra',color:'#cfe2b9',meta:'Dulce · 30 g',pending:true},
+ {id:'D1',name:'Agua sin gas',price:2.00,art:'botella',color:'#f2c3b6',meta:'Bebida · 625 ml',c:[],m:[],ing:'Agua de mesa tratada.'},
+ {id:'D2',name:'Yogurt bebible',price:3.50,art:'botella',color:'#ddd3ee',meta:'Bebida · 180 g',c:['lacteos'],m:[],ing:'Leche entera, azúcar, pulpa de fresa y cultivos lácticos.'},
+ {id:'D3',name:'Sándwich de atún',price:4.50,art:'triangulo',color:'#b9d4e6',meta:'Salado · 150 g',c:['pescado','gluten','huevo'],m:['mostaza'],ing:'Pan de molde (trigo), atún, mayonesa (huevo), lechuga y tomate. Puede contener mostaza.'}
+];
+const byId=Object.fromEntries(P.map(p=>[p.id,p]));
+const sol=n=>'S/ '+n.toFixed(2);
+
+/* ---------------- Estado ---------------- */
+const S={screen:'rest',F:new Set(),prod:null,prevF:''};
+const IDLE=30;let left=IDLE,tick=null;
+const $=s=>document.querySelector(s);
+const phone=$('#phone');
+
+function verdict(p,F=S.F){
+  if(p.pending)return {k:'nd'};
+  if(!F.size)return {k:'ne'};
+  const hit=p.c.filter(a=>F.has(a)),tr=p.m.filter(a=>F.has(a));
+  if(hit.length)return {k:'no',hit};
+  if(tr.length)return {k:'tr',tr};
+  return {k:'ok'};
+}
+const list=a=>{const n=a.map(k=>AN[k].toLowerCase());return n.length<2?n.join(''):n.slice(0,-1).join(', ')+' ni '+n.at(-1)};
+const listY=a=>{const n=a.map(k=>AN[k].toLowerCase());return n.length<2?n.join(''):n.slice(0,-1).join(', ')+' y '+n.at(-1)};
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+
+/* ---------------- Inactividad ---------------- */
+function resetIdle(){left=IDLE;paintIdle()}
+function startIdle(){clearInterval(tick);left=IDLE;tick=setInterval(()=>{left--;paintIdle();if(left<=0){clearInterval(tick);goRest()}},1000);paintIdle()}
+function paintIdle(){
+  const t=$('#timerN');if(t)t.textContent=left;
+  const box=$('.idle');if(!box)return;
+  const show=S.screen!=='rest'&&left<=10&&left>0;
+  box.classList.toggle('show',show);
+  box.classList.toggle('low',S.screen!=='cat');
+  const n=box.querySelector('b');if(n)n.textContent=left+' s';
+}
+['pointerdown','keydown','scroll'].forEach(e=>document.addEventListener(e,()=>{if(S.screen!=='rest')resetIdle()},{capture:true,passive:true}));
+
+/* ---------------- Pantallas ---------------- */
+const topBar=()=>`<div class="top"><div class="brand"><span class="logo">${I.shield('#fff',15)}</span>AlergiCheck</div><div class="where">Máquina 03 · Pab. A, 2.° piso</div></div>`;
+
+function slotHTML(p,i){
+  const v=verdict(p);let st='';
+  if(v.k==='ne'){
+    if(p.pending)st=`<span class="pend">Ficha pendiente</span>`;
+    else if(!p.c.length&&!p.m.length)st=`<span class="none">Sin alérgenos</span>`;
+    else st=`<span class="dots">${p.c.slice(0,3).map(a=>`<span class="dot" title="${AN[a]}">${ic(a,13)}</span>`).join('')}${p.m.length?`<span class="tr">+ trazas</span>`:''}</span>`;
+  }else if(v.k==='ok')st=`<span class="pill p-ok">${I.check('#135532',10)}Apto</span>`;
+  else if(v.k==='tr')st=`<span class="pill p-tr" title="Trazas de ${listY(v.tr)}">${I.warn('#6e3f00',11)}Trazas</span>`;
+  else if(v.k==='no'){let t=v.hit.length===1?AN[v.hit[0]]:AN[v.hit[0]]+' +'+(v.hit.length-1);if(t.length>12)t='No apto';st=`<span class="pill p-no" title="Contiene ${listY(v.hit)}">${I.x('#8a1c12',9)}${t}</span>`}
+  else if(v.k==='nd')st=`<span class="pill p-nd">${I.q('#5e574e',11)}Sin ficha</span>`;
+  const cls=v.k==='ne'?'':v.k;
+  const sr={ne:'',ok:'Apto para ti.',tr:'Puede contener trazas.',no:'No apto para ti.',nd:'Sin ficha de alérgenos.'}[v.k];
+  return `<button class="slot ${cls}" style="--i:${i}" data-id="${p.id}" aria-label="${p.id}, ${p.name}, ${sol(p.price)}. ${sr}">
+    <span class="hd"><span class="code">${p.id}</span><span class="price num">${sol(p.price)}</span></span>
+    <span class="art">${art(p,.9)}</span>
+    <span class="nm">${p.name}</span>
+    <span class="st">${st}</span></button>`;
+}
+
+function rest(){
+  S.screen='rest';clearInterval(tick);
+  const five=['lacteos','gluten','huevo','mani','frutos-secos'];
+  phone.innerHTML=`<div class="view" id="rest" role="button" tabindex="0" aria-label="Toca para empezar">
+   ${topBar()}
+   <div class="rest-body">
+     <h1 class="rest-h">¿Sabes qué contiene tu snack?</h1>
+     <p class="rest-p">Revisa los alérgenos de cada producto de esta máquina antes de comprar.</p>
+     <div class="icons-row">${five.map(k=>`<span class="ic-b"><span class="c">${ic(k,22)}</span>${AN[k]}</span>`).join('')}</div>
+     <div class="ghost" aria-hidden="true">${P.slice(0,3).map((p,i)=>slotHTML(p,i).replace('<button','<div').replace('</button>','</div>')).join('')}</div>
+   </div>
+   <div class="rest-foot">
+     <span class="start">${I.grid()}Toca para empezar</span>
+     <span class="verified">${I.shield('#1c7a47',13)}Fichas verificadas por la cafetería · 14 alérgenos · actualizadas hoy, 7:30 a. m.</span>
+   </div></div>`;
+  const v=$('#rest');
+  v.onclick=()=>catalog();
+  v.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();catalog()}};
+}
+
+function headCopy(){
+  if(!S.F.size)return ['Elige un producto','Toca uno para ver sus alérgenos, o marca abajo lo que evitas.'];
+  const vs=P.map(p=>verdict(p).k),ok=vs.filter(k=>k==='ok').length,tr=vs.filter(k=>k==='tr').length;
+  const sin=S.F.size<=2?'sin '+list([...S.F]):'sin tus '+S.F.size+' alérgenos';
+  if(!ok&&!tr)return ['Ningún producto es seguro para ti','Prueba quitando un filtro o pregunta en la cafetería del 5.° piso.'];
+  const h=ok?`${ok} ${ok===1?'producto':'productos'} ${sin}`:`Ninguno ${sin} del todo`;
+  const sub=[tr?`${tr} con posibles trazas`:'', 'el resto aparece atenuado'].filter(Boolean).join(' · ');
+  return [h,cap(sub)];
+}
+
+function catalog(keepScroll){
+  const fresh=S.screen!=='cat';S.screen='cat';
+  const prevScroll=keepScroll?($('.scroll')?.scrollTop||0):(S.catScroll||0);S.catScroll=0;
+  const fScroll=$('.f-row')?.scrollLeft||0;
+  const [h,sub]=headCopy();
+  let g='',i=0;
+  ['A','B','C','D'].forEach(r=>{g+=`<span class="shelf" aria-hidden="true">Bandeja ${r}</span>`;P.filter(p=>p.id[0]===r).forEach(p=>g+=slotHTML(p,i++))});
+  phone.innerHTML=`<div class="view"${fresh?'':' style="animation:none"'}>
+   ${topBar()}
+   <div class="scroll">
+     <div class="cat-head"><h1 class="cat-h">${h}</h1><p class="cat-p">${sub}</p></div>
+     <div class="grid">${g}</div>
+   </div>
+   <div class="filters" role="group" aria-labelledby="ft">
+     <div class="f-hd"><span class="f-t" id="ft">¿Qué evitas?${S.F.size?`<span class="n num">${S.F.size}</span>`:' Toca para filtrar'}</span><button class="clear" id="clear" ${S.F.size?'':'disabled'}>Quitar filtro</button></div>
+     <div class="f-row">${ALG.map(([k,n])=>`<button class="fb" data-a="${k}" aria-pressed="${S.F.has(k)}">${ic(k,20)}<span>${n}</span></button>`).join('')}</div>
+   </div>
+   <div class="idle" role="status"><p>¿Sigues ahí? Volvemos al inicio en <b class="num">10 s</b></p><button id="stay">Seguir aquí</button></div>
+  </div>`;
+  $('.scroll').scrollTop=prevScroll;
+  const row=$('.f-row');row.scrollLeft=fScroll;
+  const edge=()=>row.classList.toggle('end',row.scrollLeft+row.clientWidth>=row.scrollWidth-4);edge();row.onscroll=edge;
+  row.querySelectorAll('.fb').forEach(b=>b.onclick=()=>toggle(b.dataset.a));
+  $('#clear').onclick=()=>{S.prevF=[...S.F].join();S.F.clear();catalog(true)};
+  $('#stay').onclick=resetIdle;
+  phone.querySelectorAll('.slot').forEach(b=>b.onclick=()=>ficha(b.dataset.id));
+  if(fresh)startIdle();else paintIdle();
+}
+
+function toggle(a){
+  const before=new Map(P.map(p=>[p.id,verdict(p).k]));
+  S.F.has(a)?S.F.delete(a):S.F.add(a);
+  catalog(true);
+  /* las ranuras que pasan a ser aptas se "encienden" */
+  phone.querySelectorAll('.slot.ok').forEach(el=>{if(before.get(el.dataset.id)!=='ok')el.classList.add('lit')});
+  const fb=phone.querySelector(`.fb[data-a="${a}"]`);fb&&fb.focus({preventScroll:true});
+}
+
+function ficha(id){
+  if(S.screen==='cat')S.catScroll=$('.scroll')?.scrollTop||0;
+  const p=byId[id];S.screen='ficha';S.prod=id;
+  const v=verdict(p);
+  const F=[...S.F];
+  let vb,rows='',extra='',foot;
+  const icn={ok:I.check('#fff',20,2.6),tr:I.warn('#fff',20),no:I.x('#fff',16,2.6),ne:I.q('#7a4a35',22),nd:I.warn('#fff',20)};
+  if(p.pending){
+    vb=['tr','Aún no tenemos su ficha','Es un producto nuevo y el personal todavía no registra sus alérgenos.'];
+    const show=F.length?F:['lacteos','gluten','huevo','mani','frutos-secos'];
+    rows=show.map(a=>`<div class="ar ${S.F.has(a)?'mine':''}"><span class="nmx">${ic(a,18)}${AN[a]}${S.F.has(a)?'<span class="evit">evitas</span>':''}</span><span class="res r-nd">Sin datos</span></div>`).join('');
+    extra=`<div class="ing"><h4>Mientras tanto</h4><p>Revisa la etiqueta del empaque o pregunta en la cafetería del 5.° piso antes de comerlo.</p></div>`;
+    foot=`<button class="btn btn-p" id="opts">${I.grid()}${F.length?'Ver opciones aptas para ti':'Ver otros productos'}</button><button class="btn btn-s" id="ask">${I.flag}Pedir que registren esta ficha</button>`;
+  }else{
+    if(v.k==='ok'){const p2=p.m.length?` Puede tener trazas de ${listY(p.m)}.`:'';vb=['ok','Apto para ti',`No contiene ${list(F)}.${p2}`]}
+    else if(v.k==='tr')vb=['tr','Úsalo con precaución',`Puede contener trazas de ${listY(v.tr)}. Si tu alergia es severa, mejor elige otro.`];
+    else if(v.k==='no')vb=['no','No es apto para ti',`Contiene ${listY(v.hit)}.`];
+    else vb=['ne','¿Es apto para ti?','Vuelve y marca abajo los alérgenos que evitas: te lo diremos al instante.'];
+    const st=a=>p.c.includes(a)?`<span class="res r-no">${I.x('#8a1c12',10)}Contiene</span>`:p.m.includes(a)?`<span class="res r-tr">${I.warn('#6e3f00',13)}Puede contener</span>`:`<span class="res r-ok">${I.check('#135532',13)}No contiene</span>`;
+    const order=[...F,...p.c.filter(a=>!S.F.has(a)),...p.m.filter(a=>!S.F.has(a)&&!p.c.includes(a))];
+    rows=order.map(a=>`<div class="ar ${S.F.has(a)?'mine':''}"><span class="nmx">${ic(a,18)}${AN[a]}${S.F.has(a)?'<span class="evit">evitas</span>':''}</span>${st(a)}</div>`).join('');
+    const restN=ALG.length-order.length;
+    rows+=`<div class="rest-note">${order.length?`No contiene ninguno de los otros ${restN} alérgenos.`:'No contiene ninguno de los 14 alérgenos principales.'}</div>`;
+    extra=`<div class="ing"><h4>Ingredientes</h4><p>${p.ing}</p><div class="ver2">${I.shield('#1c7a47',13)}Verificada por la cafetería · actualizada hoy, 7:30 a. m.</div></div>`;
+    const buy=`<div class="buy"><span>${I.keypad}</span><p>Para comprarlo, marca en el teclado de la máquina</p><span class="key" aria-label="código ${p.id}">${p.id}</span></div>`;
+    foot=v.k==='no'?`<button class="btn btn-p" id="opts">${I.grid()}Ver opciones aptas para ti</button>`:buy;
+  }
+  phone.innerHTML=`<div class="view">
+   <div class="f-top"><button class="back" id="back">${I.back}Volver</button><span class="timer">Vuelve al inicio en <b class="num" id="timerN">${left}</b> s</span></div>
+   <div class="scroll"><div class="ficha">
+     <div class="hero"><span class="big">${art(p,2)}</span><div><span class="code">${p.id}</span><h2>${p.name}</h2><div class="meta">${p.meta}</div><div class="pr num">${sol(p.price)}</div></div></div>
+     <div class="verdict v-${vb[0]}" role="status"><span class="vi">${icn[p.pending?'nd':vb[0]]}</span><div><h3>${vb[1]}</h3><p>${vb[2]}</p></div></div>
+     <h3 class="sec-h">Alérgenos de la ficha</h3>
+     <div class="table">${rows}</div>
+     ${extra}
+   </div></div>
+   <div class="f-foot">${foot}</div>
+   <div class="idle low" role="status"><p>¿Sigues ahí? Volvemos al inicio en <b class="num">10 s</b></p><button id="stay">Seguir aquí</button></div>
+  </div>`;
+  $('#back').onclick=()=>catalog();
+  $('#stay').onclick=resetIdle;
+  const o=$('#opts');if(o)o.onclick=()=>catalog();
+  const a=$('#ask');if(a)a.onclick=()=>sent(p);
+  resetIdle();
+}
+
+function sent(p){
+  S.screen='sent';
+  phone.innerHTML=`<div class="view">
+   <div class="f-top"><button class="back" id="back">${I.back}Volver</button><span class="timer">Vuelve al inicio en <b class="num" id="timerN">${left}</b> s</span></div>
+   <div class="done">
+     <span class="halo"><span>${I.check('#fff',36,2.4)}</span></span>
+     <h2>Listo, avisamos a la cafetería</h2>
+     <p>El personal registrará los alérgenos del ${p.name} hoy mismo.</p>
+     <div class="tip">${I.q('#a15c00',20)}<div><b>Antes de comprarlo</b><span>Revisa la etiqueta del empaque o pregunta en la cafetería del 5.° piso.</span></div></div>
+   </div>
+   <div class="f-foot"><button class="btn btn-p" id="opts">${I.grid()}Ver opciones aptas para ti</button><button class="btn btn-s" id="home">Volver al inicio</button></div>
+   <div class="idle low" role="status"><p>¿Sigues ahí? Volvemos al inicio en <b class="num">10 s</b></p><button id="stay">Seguir aquí</button></div>
+  </div>`;
+  $('#back').onclick=()=>ficha(p.id);
+  $('#opts').onclick=()=>catalog();
+  $('#home').onclick=goRest;
+  $('#stay').onclick=resetIdle;
+  resetIdle();
+}
+
+/* Al volver al inicio se borra todo: la pantalla es compartida */
+function goRest(){S.F.clear();S.prod=null;S.catScroll=0;rest()}
+
+rest();
+</script>
+</body>
+</html>
