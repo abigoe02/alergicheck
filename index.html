@@ -89,7 +89,7 @@ input{font:inherit}
 #cam .shot{object-fit:contain;background:#000}
 .cbtn.on{background:#ffd54a;color:#1b1916}.cbtn.on path{stroke:#1b1916}
 .item[data-hist]{cursor:pointer}.item[data-hist]:active{transform:scale(.98)}
-.cam-top{position:absolute;left:0;right:0;top:0;padding:calc(12px + env(safe-area-inset-top)) 16px 0;display:flex;align-items:center;justify-content:space-between;z-index:3}
+.cam-top{position:absolute;left:0;right:0;top:0;padding:calc(12px + env(safe-area-inset-top)) 16px 0;display:flex;align-items:center;justify-content:space-between;z-index:6;pointer-events:none}.cam-top>*{pointer-events:auto}
 .cbtn{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.4);display:grid;place-items:center;color:#fff}
 .cam-title{font-size:15px;font-weight:700;user-select:none;-webkit-user-select:none;padding:10px}
 .finder{position:absolute;left:50%;top:44%;width:64%;aspect-ratio:1/1.05;transform:translate(-50%,-50%);z-index:2;pointer-events:none}
@@ -238,7 +238,7 @@ const $=s=>document.querySelector(s);
 const phone=$('#phone');
 function toast(t){let el=$('.toast');if(!el){el=document.createElement('div');el.className='toast';phone.appendChild(el)}el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),1800)}
 function tabbar(active){return `<nav class="tabbar">${[['inicio','Inicio',I.home],['historial','Historial',I.clock],['perfil','Perfil',I.user]].map(([k,l,ic])=>`<button class="tab ${active===k?'on':''}" data-go="${k}"><span class="pill">${ic}</span>${l}</button>`).join('')}</nav>`}
-function go(v){stopCam();view=v;render()}
+function go(v){stopCam();scanTok++;view=v;render()}
 
 function render(){
   if(view==='camara')return renderCam();
@@ -346,13 +346,15 @@ Responde SOLO con un objeto JSON, sin texto adicional:
 async function dataURLtoBlob(u){const [m,b]=u.split(',');const mime=(m.match(/data:(.*?);/)||[,'image/jpeg'])[1];const bin=atob(b);const arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);return new Blob([arr],{type:mime})}
 function toProduct(j,via){
   if(!j||j.reconocido===false)return {unknown:true,ai:true,via,name:'No reconocido'};
-  const clean=a=>Array.isArray(a)?a.map(x=>String(x).toLowerCase().trim()).filter(x=>KEYS.includes(x)):[];
+  const SYN={leche:'lacteos',lactosa:'lacteos',lacteo:'lacteos',caseina:'lacteos',trigo:'gluten',cebada:'gluten',centeno:'gluten',avena:'gluten',huevos:'huevo',cacahuate:'mani',cacahuete:'mani',nueces:'frutos-secos','frutos secos':'frutos-secos',soja:'soya',sesamo:'ajonjoli',crustaceos:'mariscos',sulfito:'sulfitos'};
+  const clean=a=>Array.isArray(a)?[...new Set(a.map(x=>{const k=String(x).toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'');return SYN[k]||k}).filter(x=>KEYS.includes(x)))]:[];
   const c=clean(j.contiene);
   return {ai:true,via,name:String(j.nombre||'Producto sin nombre'),brand:String(j.marca||''),contains:c,may:clean(j.puede_contener).filter(x=>!c.includes(x)),others:Array.isArray(j.otros)?j.otros.map(String):[],ing:String(j.ingredientes||''),conf:String(j.confianza||'')};
 }
 async function viaBackend(url){
   const [meta,b64]=url.split(',');const mime=(meta.match(/data:(.*?);/)||[,'image/jpeg'])[1];
-  const r=await fetch(CONFIG.SUPABASE_URL.replace(/\/$/,'')+'/functions/v1/reconocer',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+CONFIG.SUPABASE_ANON_KEY,'apikey':CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({image:b64,mime})});
+  const ctl=new AbortController();setTimeout(()=>ctl.abort(),25000);
+  const r=await fetch(CONFIG.SUPABASE_URL.replace(/\/$/,'')+'/functions/v1/reconocer',{signal:ctl.signal,method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+CONFIG.SUPABASE_ANON_KEY,'apikey':CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({image:b64,mime})});
   const j=await r.json();if(!r.ok)throw new Error(j.error||('HTTP '+r.status));
   return toProduct(j,'gemini');
 }
@@ -370,6 +372,7 @@ async function recognize(url){
     return {unknown:true,ai:true,failed:true,name:'No reconocido'};
   }
 }
+let scanTok=0;
 function analyze(url){
   photoURL=url;stopCam();
   const cam=$('#cam');const v=cam.querySelector('video');if(v)v.remove();const fb=$('#fb');if(fb)fb.remove();
@@ -377,7 +380,8 @@ function analyze(url){
   cam.querySelectorAll('.cam-hint,.cam-bottom,.finder').forEach(n=>n.style.display='none');
   const a=document.createElement('div');a.className='analyzing';a.innerHTML='<div class="spin"></div><span>Analizando…</span><span style="font-weight:400;font-size:13px;opacity:.85">Leyendo el empaque y sus alérgenos</span>';cam.appendChild(a);
   const t0=Date.now();
-  recognize(url).then(p=>{setTimeout(()=>{a.remove();showResult(p)},Math.max(0,1000-(Date.now()-t0)))});
+  const tok=++scanTok;
+  recognize(url).then(p=>{setTimeout(()=>{if(tok!==scanTok||view!=='camara'||!a.isConnected)return;a.remove();showResult(p)},Math.max(0,1000-(Date.now()-t0)))});
 }
 function showResult(p){
   const s=p;const k=S.snack;result=verdict(p);
@@ -394,7 +398,7 @@ function buildSheet(s,r,fromHist){
   let reason;
   if(v==='No apto')reason=`Contiene ${listJoin(hit)}, que marcaste en tu perfil.`;
   else if(v==='Trazas')reason=`No lo lleva como ingrediente, pero puede tener trazas de ${listJoin(r.may.map(a=>LABEL[a].toLowerCase()))}. ${INFO}`;
-  else if(v==='Apto')reason=(S.allergies.length||S.customs.some(c=>c.on))?'No encontramos ninguna de tus alergias en su ficha.':'No marcaste alergias en tu perfil. Revisa la ficha antes de comer.';
+  else if(v==='Apto'){const tr=(s.may||[]).filter(a=>S.allergies.includes(a));reason=tr.length?`No lo lleva como ingrediente, pero puede tener trazas de ${listJoin(tr.map(a=>LABEL[a].toLowerCase()))}. Te lo marcamos apto porque no activaste los avisos de trazas. ${INFO}`:(S.allergies.length||S.customs.some(c=>c.on))?'No encontramos ninguna de tus alergias en su ficha.':'No marcaste alergias en tu perfil. Revisa la ficha antes de comer.'}
   else reason=s.failed?'No pudimos analizar la foto en este momento. Intenta otra vez.':'La foto salió borrosa o no logramos identificar el producto.';
   let rows='';
   if(!s.unknown){const all=[...s.contains.map(a=>[LABEL[a],'Contiene',S.allergies.includes(a)]),...s.may.map(a=>[LABEL[a],'Puede contener',S.allergies.includes(a)]),...r.custom.map(c=>[cap(c),'Contiene',true])];
@@ -414,10 +418,10 @@ function buildSheet(s,r,fromHist){
   return sh;
 }
 function dateNow(){const d=new Date();return d.toLocaleDateString('es-PE',{day:'numeric',month:'short'})+', '+timeNow()}
-function shrink(url,max,square){return new Promise(res=>{if(!url)return res(null);const im=new Image();im.onload=()=>{try{const c=document.createElement('canvas');const ctx=c.getContext('2d');
+function shrink(url,max,square,qq){return new Promise(res=>{if(!url)return res(null);const im=new Image();im.onload=()=>{try{const c=document.createElement('canvas');const ctx=c.getContext('2d');
   if(square){const m=Math.min(im.naturalWidth,im.naturalHeight);c.width=c.height=max;ctx.drawImage(im,(im.naturalWidth-m)/2,(im.naturalHeight-m)/2,m,m,0,0,max,max)}
   else{const k=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight));c.width=im.naturalWidth*k;c.height=im.naturalHeight*k;ctx.drawImage(im,0,0,c.width,c.height)}
-  res(c.toDataURL('image/jpeg',square?.7:.6))}catch(e){res(null)}};im.onerror=()=>res(null);im.src=url})}
+  res(c.toDataURL('image/jpeg',qq||(square?.7:.6)))}catch(e){res(null)}};im.onerror=()=>res(null);im.src=url})}
 function dragResult(sh,fromHist){
   const veil=$('#veil');let y0=null,dy=0,h=0,base=0,moved=false;
   const setPeek=on=>{sh.style.transform='';sh.style.transition='';sh.classList.toggle('peek',on);if(veil)veil.classList.toggle('show',!on)};
@@ -448,7 +452,7 @@ function openHist(id){
   $('#cam').appendChild(buildSheet(h.p,h.r,true));
 }
 function thumbOf(url){if(!url)return null;try{const im=new Image();im.src=url;const c=document.createElement('canvas');c.width=72;c.height=72;const ctx=c.getContext('2d');if(im.complete&&im.naturalWidth){const m=Math.min(im.naturalWidth,im.naturalHeight);ctx.drawImage(im,(im.naturalWidth-m)/2,(im.naturalHeight-m)/2,m,m,0,0,72,72);return c.toDataURL('image/jpeg',.7)}}catch(e){}return null}
-function readFile(input){const f=input.files&&input.files[0];input.value='';if(!f)return;const r=new FileReader();r.onload=()=>{if(view!=='camara'){view='camara';renderCam();setTimeout(()=>analyze(r.result),50)}else analyze(r.result)};r.readAsDataURL(f)}
+function readFile(input){const f=input.files&&input.files[0];input.value='';if(!f)return;const r=new FileReader();r.onload=async()=>{const small=await shrink(r.result,1280,false,.82);const u=small||r.result;if(view!=='camara'){view='camara';renderCam();setTimeout(()=>analyze(u),50)}else analyze(u)};r.readAsDataURL(f)}
 $('#fileCam').addEventListener('change',e=>readFile(e.target));
 $('#fileGal').addEventListener('change',e=>readFile(e.target));
 
