@@ -271,7 +271,7 @@ function inicio(){
      <div class="row"><span class="grow t-detail" style="font-weight:700">Tus alergias</span><span class="link">Editar</span></div>
      ${tags.length?`<div class="chips" style="gap:6px">${tags.join('')}</div>`:'<div class="empty">Aún no marcas alergias. Toca Editar para elegirlas.</div>'}
    </button>
-   <button class="cta" data-go="camara"><span class="ico">${I.camera}</span><span style="font-size:20px;line-height:26px;font-weight:700">Tómale una foto al snack</span><span style="font-size:13px;line-height:18px;opacity:.9">Nuestra IA lo reconoce, incluso detrás del vidrio de la máquina.</span><span class="pillbtn">Escanear ahora →</span></button>
+   <button class="cta" data-go="camara"><span class="ico">${I.camera}</span><span style="font-size:20px;line-height:26px;font-weight:700">Tómale una foto al snack</span><span style="font-size:13px;line-height:18px;opacity:.9">Te decimos al instante si es apto para ti.</span><span class="pillbtn">Escanear ahora →</span></button>
    <div><div class="row" style="margin-bottom:8px"><span class="grow" style="font-size:15px;font-weight:700">Revisados recientemente</span>${S.history.length?'<button class="link" data-go="historial">Ver todo</button>':''}</div>
     ${rec.length?`<div class="list">${rec.map(itemHTML).join('')}</div>`:'<div class="empty">Todavía no revisas ningún snack. Toca “Escanear ahora” para empezar.</div>'}
    </div>
