@@ -302,7 +302,7 @@ function historial(){
 function renderCam(){
   phone.innerHTML=`<div class="view" id="cam">
    <video playsinline muted autoplay></video>
-   <div class="cam-fallback" id="fb" hidden>${I.camera.replace(/#7a4a35/g,'#fff')}<p>Toca el botón para tomarle una foto al snack con la cámara de tu teléfono, o elige una de tu galería.</p><button class="btn btn-p" data-act="native-cam">Tomar foto</button></div>
+   <div class="cam-fallback" id="fb" hidden>${I.camera.replace(/#7a4a35/g,'#fff')}<p>Toca el botón de abajo para tomar la foto o elige una de tu galería.</p></div>
    <div class="finder"><i></i><i></i><i></i><i></i></div>
    <div class="cam-top"><button class="cbtn" data-act="close-cam" aria-label="Cerrar">${I.x('#fff',12)}</button><span class="cam-title" id="camTitle">Toma una foto del snack</span><button class="cbtn" data-act="torch" id="torchBtn" aria-label="Linterna">${I.bolt}</button></div>
    <div class="cam-hint">${I.spark()} Encuadra el empaque, aunque esté tras el vidrio</div>
@@ -326,7 +326,7 @@ async function startCam(deviceId){
     v.srcObject=camStream;await v.play().catch(()=>{});
     if(!deviceId&&!uwId&&!(zCaps&&zCaps.min<1)){try{const ds=await navigator.mediaDevices.enumerateDevices();const u=ds.find(d=>d.kind==='videoinput'&&/ultra/i.test(d.label));if(u)uwId=u.deviceId}catch(e){}}
     if(!onUW)await applyZoom(zoom,true);drawZoom();
-  }catch(e){if(fb)fb.hidden=false;if(v)v.style.display='none';const z=$('#zoom');if(z)z.hidden=true}
+  }catch(e){if(fb)fb.hidden=false;if(v)v.style.display='none';const z=$('#zoom');if(z)z.style.display='none'}
 }
 function zoomStops(){const st=[];if(uwId||(zCaps&&zCaps.min<1))st.push(.5);st.push(1,2);return st}
 function drawZoom(){const z=$('#zoom');if(!z)return;z.innerHTML=zoomStops().map(n=>{const on=Math.abs(zoom-n)<.05||(n===2&&zoom>1.5)||(n===1&&zoom>1.05&&zoom<=1.5);const lab=on&&n!==.5&&Math.abs(zoom-n)>.05?zoom.toFixed(1):(n===.5?'.5':String(n));return `<button data-z="${n}" class="${on?'on':''}">${lab}${on?'×':''}</button>`}).join('');
