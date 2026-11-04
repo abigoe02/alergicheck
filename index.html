@@ -139,8 +139,9 @@ details summary::-webkit-details-marker{display:none}
 .opt .mk{width:24px;height:24px;border-radius:50%;margin-left:auto;display:grid;place-items:center;background:var(--brand);transform:scale(0);transition:transform .25s var(--ease)}
 .opt.on .mk{transform:scale(1)}
 .opt.addnew{background:var(--brand-s);border-color:var(--brand);color:var(--brand)}
-.info-i{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;font:700 12px/1 Georgia,serif;font-style:italic;vertical-align:middle;margin-left:2px;opacity:.8;cursor:pointer;flex:none;align-self:center}
-.chips .info-i{width:30px;height:30px;margin-left:-2px;color:var(--tx2)}
+.info-i{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;border:1.2px solid currentColor;font:700 9px/1 Georgia,serif;font-style:italic;vertical-align:-2px;margin-left:3px;opacity:.7;cursor:pointer;flex:none;align-self:center;position:relative}
+.info-i::after{content:'';position:absolute;inset:-12px}
+.chips .info-i{width:18px;height:18px;font-size:11px;margin-left:-4px;color:var(--tx2)}
 .ibd{position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:20;display:grid;place-items:center;padding:24px;opacity:0;transition:opacity .25s}.ibd.show{opacity:1}
 .ibox{background:var(--sup);color:var(--tx);border-radius:var(--r-lg);padding:20px;max-width:330px;display:flex;flex-direction:column;gap:10px;transform:scale(.95);transition:transform .25s var(--ease)}.ibd.show .ibox{transform:none}
 .ibox h3{margin:0;font-size:18px}.ibox p{margin:0;font-size:14px;line-height:20px;color:var(--tx2)}
