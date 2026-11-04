@@ -190,7 +190,7 @@ const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
 const DEF=()=>({onboarded:false,allergies:[],customs:[],traces:false,history:[],snack:'alfajor',ai:true});
 let S;try{S=Object.assign(DEF(),JSON.parse(localStorage.getItem('alergicheck')||'{}'))}catch(e){S=DEF()}
 const save=()=>{try{localStorage.setItem('alergicheck',JSON.stringify(S))}catch(e){}};
-let view=S.onboarded?'inicio':'perfil';let histFilter='todos';
+S.ai=true;let view=S.onboarded?'inicio':'perfil';let histFilter='todos';
 let camStream=null,photoURL=null,result=null;
 
 /* ---------------- Íconos ---------------- */
@@ -306,7 +306,7 @@ function renderCam(){
    <div class="cam-bottom"><button class="gal" data-act="gallery"><span class="b">${I.img}</span>Galería</button><button class="shutter" data-act="shoot" aria-label="Tomar foto"></button><span style="width:56px"></span></div>
    <div class="veil" id="veil"></div>
   </div>`;
-  bind(phone);startCam();bindSecret();
+  bind(phone);startCam();
 }
 async function startCam(){
   const fb=$('#fb');const v=$('#cam video');
