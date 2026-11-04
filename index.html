@@ -327,7 +327,7 @@ async function toggleTorch(btn){
 }
 function shoot(){
   const v=$('#cam video');let url=null;
-  if(camStream&&v&&v.videoWidth){const c=document.createElement('canvas');const sc=Math.min(1,1280/Math.max(v.videoWidth,v.videoHeight));c.width=v.videoWidth*sc;c.height=v.videoHeight*sc;c.getContext('2d').drawImage(v,0,0,c.width,c.height);url=c.toDataURL('image/jpeg',.82)}
+  if(camStream&&v&&v.videoWidth){const c=document.createElement('canvas');const sc=Math.min(1,1024/Math.max(v.videoWidth,v.videoHeight));c.width=v.videoWidth*sc;c.height=v.videoHeight*sc;c.getContext('2d').drawImage(v,0,0,c.width,c.height);url=c.toDataURL('image/jpeg',.82)}
   const f=document.createElement('div');f.className='flash';$('#cam').appendChild(f);
   if(url)analyze(url);else $('#fileCam').click();
 }
@@ -354,15 +354,16 @@ function toProduct(j,via){
 }
 async function viaBackend(url){
   const [meta,b64]=url.split(',');const mime=(meta.match(/data:(.*?);/)||[,'image/jpeg'])[1];
-  const ctl=new AbortController();setTimeout(()=>ctl.abort(),25000);
+  const ctl=new AbortController();setTimeout(()=>ctl.abort(),45000);
   const r=await fetch(CONFIG.SUPABASE_URL.replace(/\/$/,'')+'/functions/v1/reconocer',{signal:ctl.signal,method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+CONFIG.SUPABASE_ANON_KEY,'apikey':CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({image:b64,mime})});
   const j=await r.json();if(!r.ok)throw new Error(j.error||('HTTP '+r.status));
   return toProduct(j,'gemini');
 }
 const backendOn=()=>!!(CONFIG.SUPABASE_URL&&CONFIG.SUPABASE_ANON_KEY);
+let lastScan=null,scanT0=0;
 async function recognize(url){
   if(!S.ai)return demoProduct();
-  if(backendOn()){try{return await viaBackend(url)}catch(e){console.warn('Backend:',e);if(!sampleFn)return {unknown:true,ai:true,failed:true,name:'No reconocido'}}}
+  if(backendOn()){try{scanT0=Date.now();const out=await viaBackend(url);lastScan={ok:true,ms:Date.now()-scanT0,msg:out.unknown?'Respondió: no reconocido':'Respondió: '+out.name};return out}catch(e){console.warn('Backend:',e);lastScan={ok:false,ms:Date.now()-scanT0,msg:e&&e.name==='AbortError'?'Tiempo de espera agotado (45 s)':String(e&&e.message||e)};if(!sampleFn)return {unknown:true,ai:true,failed:true,name:'No reconocido'}}}
   if(!sampleFn)return demoProduct();
   try{
     const blob=await dataURLtoBlob(url);
@@ -453,7 +454,7 @@ function openHist(id){
   $('#cam').appendChild(buildSheet(h.p,h.r,true));
 }
 function thumbOf(url){if(!url)return null;try{const im=new Image();im.src=url;const c=document.createElement('canvas');c.width=72;c.height=72;const ctx=c.getContext('2d');if(im.complete&&im.naturalWidth){const m=Math.min(im.naturalWidth,im.naturalHeight);ctx.drawImage(im,(im.naturalWidth-m)/2,(im.naturalHeight-m)/2,m,m,0,0,72,72);return c.toDataURL('image/jpeg',.7)}}catch(e){}return null}
-function readFile(input){const f=input.files&&input.files[0];input.value='';if(!f)return;const r=new FileReader();r.onload=async()=>{const small=await shrink(r.result,1280,false,.82);const u=small||r.result;if(view!=='camara'){view='camara';renderCam();setTimeout(()=>analyze(u),50)}else analyze(u)};r.readAsDataURL(f)}
+function readFile(input){const f=input.files&&input.files[0];input.value='';if(!f)return;const r=new FileReader();r.onload=async()=>{const small=await shrink(r.result,1024,false,.8);const u=small||r.result;if(view!=='camara'){view='camara';renderCam();setTimeout(()=>analyze(u),50)}else analyze(u)};r.readAsDataURL(f)}
 $('#fileCam').addEventListener('change',e=>readFile(e.target));
 $('#fileGal').addEventListener('change',e=>readFile(e.target));
 
@@ -467,7 +468,8 @@ function openMod(){
   const sh=document.createElement('div');sh.className='sheet mod';
   sh.innerHTML=`<div class="grab"><i></i></div><div class="body">
    <div class="banner">Solo para el entrevistador · no es parte de la app</div>
-   <button class="card row" data-act="ai-mode" style="text-align:left;width:100%"><div class="grow"><div style="font-size:14px;font-weight:700">Reconocimiento real con Claude</div><div class="t-cap" style="margin-top:2px">${backendOn()?'La IA (Gemini vía Supabase) identifica el producto de la foto.':sampleFn?'Claude identifica el producto de la foto.':'No disponible en esta vista; se usa el modo demo.'}</div></div><span class="switch ${S.ai&&(sampleFn||backendOn())?'on':''}"></span></button>
+   <button class="card row" data-act="ai-mode" style="text-align:left;width:100%"><div class="grow"><div style="font-size:14px;font-weight:700">Reconocimiento real</div><div class="t-cap" style="margin-top:2px">${backendOn()?'La IA (Gemini vía Supabase) identifica el producto de la foto.':sampleFn?'Claude identifica el producto de la foto.':'No disponible en esta vista; se usa el modo demo.'}</div></div><span class="switch ${S.ai&&(sampleFn||backendOn())?'on':''}"></span></button>
+   ${lastScan?`<div class="t-cap" style="padding:8px 12px;border-radius:10px;background:${lastScan.ok?'var(--grn-b)':'var(--red-b)'}">Último escaneo: ${(lastScan.ms/1000).toFixed(1)} s · ${esc(lastScan.msg)}</div>`:''}
    <h2 class="h-sheet">Modo demo: ¿qué snack mostrar?</h2>
    <p class="t-body">Se usa si apagas el reconocimiento real o si la IA no está disponible.</p>
    <div class="list">${Object.entries(SNACKS).map(([k,s])=>`<button class="opt ${S.snack===k?'on added':''}" data-snack="${k}"><span class="thumb">${snackArt(k,30)}</span>${s.name}<span class="mk">${I.check()}</span></button>`).join('')}</div>
