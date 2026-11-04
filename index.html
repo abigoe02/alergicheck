@@ -238,12 +238,14 @@ function go(v){stopCam();view=v;render()}
 function render(){
   if(view==='camara')return renderCam();
   phone.innerHTML='';
-  const el=document.createElement('div');el.className='view fade-in';
+  const el=document.createElement('div');el.className='view';
   if(view==='perfil')el.innerHTML=perfil();
   if(view==='inicio')el.innerHTML=inicio();
   if(view==='historial')el.innerHTML=historial();
+  const sc=el.querySelector('.scroll');if(sc&&view!==lastView)sc.classList.add('fade-in');lastView=view;
   phone.appendChild(el);bind(el);
 }
+let lastView=null;
 function perfil(){
   const customs=S.customs.filter(c=>c.on);
   return `<div class="scroll"><div class="stack">
