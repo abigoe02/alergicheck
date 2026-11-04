@@ -406,8 +406,8 @@ async function recognize(url){
 }
 let scanTok=0;
 function analyze(url){
-  photoURL=url;stopCam();
-  const cam=$('#cam');const v=cam.querySelector('video');if(v)v.remove();const fb=$('#fb');if(fb)fb.remove();
+  photoURL=url;stopCam();vitrina=null;
+  const cam=$('#cam');cam.querySelectorAll('.sheet,.analyzing').forEach(n=>n.remove());const vl=$('#veil');if(vl)vl.classList.remove('show');const v=cam.querySelector('video');if(v)v.remove();const fb=$('#fb');if(fb)fb.remove();
   let img=cam.querySelector('.shot');if(!img){img=document.createElement('img');img.className='shot';cam.prepend(img)}img.src=url;
   cam.querySelectorAll('.cam-hint,.cam-bottom,.finder,.zoom').forEach(n=>n.style.display='none');
   const a=document.createElement('div');a.className='analyzing';a.innerHTML='<div class="spin"></div><span>Analizando…</span><span style="font-weight:400;font-size:13px;opacity:.85">Leyendo el empaque y sus alérgenos</span>';cam.appendChild(a);
