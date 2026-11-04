@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f7f4ef">
-<title>AlergiCheck · Máquina</title>
+<title>AlergiCheck · Guía de alérgenos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -61,13 +61,10 @@ button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s-xs);padding:0 var(--s-md) var(--s-md)}
 .shelf{grid-column:1/-1;display:flex;align-items:center;gap:var(--s-xs);font-size:11px;font-weight:700;color:var(--tx3);margin:var(--s-xs) 0 -2px}
 .shelf::after{content:"";flex:1;height:1px;background:var(--bd)}
-.slot{position:relative;display:flex;flex-direction:column;align-items:stretch;text-align:left;min-height:148px;padding:var(--s-xs);border-radius:var(--r-md);background:var(--sup);border:1px solid var(--bd);
+.card{position:relative;display:flex;flex-direction:column;align-items:stretch;text-align:left;min-height:124px;padding:var(--s-xs);border-radius:var(--r-md);background:var(--sup);border:1px solid var(--bd);
   transition:opacity .35s var(--out) calc(var(--i)*28ms),border-color .35s var(--out) calc(var(--i)*28ms),box-shadow .35s var(--out) calc(var(--i)*28ms),background .35s var(--out) calc(var(--i)*28ms),transform .15s}
-.slot:active{transform:scale(.97)}
-.slot .hd{display:flex;align-items:center;justify-content:space-between;gap:4px}
-.code{display:inline-grid;place-items:center;min-width:28px;height:22px;padding:0 6px;border-radius:6px;background:var(--tx);color:var(--inv);font-size:12px;font-weight:700;transition:background .35s var(--out) calc(var(--i)*28ms)}
-.price{font-size:12px;font-weight:600;color:var(--tx2);white-space:nowrap}
-.art{display:grid;place-items:center;height:48px;margin:6px 0 4px;transition:filter .35s var(--out) calc(var(--i)*28ms),opacity .35s var(--out) calc(var(--i)*28ms)}
+.card:active{transform:scale(.97)}
+.art{display:grid;place-items:center;height:48px;margin:4px 0 4px;transition:filter .35s var(--out) calc(var(--i)*28ms),opacity .35s var(--out) calc(var(--i)*28ms)}
 .nm{font-size:13px;line-height:16px;font-weight:600;min-height:32px;text-decoration:line-through;text-decoration-color:transparent;text-decoration-thickness:1.5px;transition:color .35s var(--out) calc(var(--i)*28ms),text-decoration-color .35s var(--out) calc(var(--i)*28ms)}
 .st{margin-top:auto;padding-top:6px;min-height:28px;display:flex;align-items:flex-end}
 .dots{display:flex;gap:4px;align-items:center}
@@ -83,15 +80,13 @@ button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 .p-no{background:var(--red-b);color:var(--red-t)}
 .p-nd{background:var(--sutil);color:var(--tx2)}
 /* estados filtrados */
-.slot.ok{border:2px solid var(--grn);box-shadow:0 2px 10px rgba(28,122,71,.14);padding:7px}
-.slot.tr{border:2px solid var(--amb);padding:7px}
-.slot.no,.slot.nd{background:#fbfaf8}
-.slot.no .art,.slot.nd .art{filter:grayscale(1);opacity:.4}
-.slot.no .nm{color:var(--tx3);text-decoration-color:var(--red)}
-.slot.nd .nm{color:var(--tx3)}
-.slot.no .code,.slot.nd .code{background:#a49c92}
-.slot.no .price,.slot.nd .price{color:var(--tx3)}
-.slot.lit{animation:lit .7s var(--out) calc(var(--i)*28ms)}
+.card.ok{border:2px solid var(--grn);box-shadow:0 2px 10px rgba(28,122,71,.14);padding:7px}
+.card.tr{border:2px solid var(--amb);padding:7px}
+.card.no,.card.nd{background:#fbfaf8}
+.card.no .art,.card.nd .art{filter:grayscale(1);opacity:.4}
+.card.no .nm{color:var(--tx3);text-decoration-color:var(--red)}
+.card.nd .nm{color:var(--tx3)}
+.card.lit{animation:lit .7s var(--out) calc(var(--i)*28ms)}
 @keyframes lit{0%{box-shadow:0 0 0 0 rgba(28,122,71,.45)}100%{box-shadow:0 0 0 10px rgba(28,122,71,0),0 2px 10px rgba(28,122,71,.14)}}
 
 /* filtro inferior */
@@ -116,10 +111,8 @@ button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 .ficha{padding:var(--s-md);display:flex;flex-direction:column;gap:var(--s-md)}
 .hero{display:flex;align-items:center;gap:var(--s-md);padding:var(--s-lg) var(--s-md);border-radius:var(--r-lg);background:var(--hero)}
 .hero .big{flex:none;width:112px;display:grid;place-items:center}
-.hero .code{height:30px;min-width:44px;font-size:17px;border-radius:8px}
-.hero h2{font-size:20px;line-height:24px;font-weight:800;letter-spacing:-.01em;margin:10px 0 2px}
+.hero h2{font-size:20px;line-height:24px;font-weight:800;letter-spacing:-.01em;margin:0 0 2px}
 .hero .meta{font-size:12.5px;color:var(--tx2)}
-.hero .pr{font-size:18px;font-weight:800;margin-top:8px}
 .verdict{display:flex;gap:var(--s-sm);align-items:flex-start;padding:var(--s-md);border-radius:var(--r-lg);animation:enter .35s var(--out) .05s both}
 .verdict .vi{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center}
 .verdict h3{font-size:20px;line-height:24px;font-weight:800;margin:0 0 2px}
@@ -142,9 +135,6 @@ button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 .ing p{font-size:13px;line-height:19px;color:var(--tx2);margin:0}
 .ver2{display:flex;gap:6px;align-items:center;font-size:12px;font-weight:600;color:var(--tx);margin-top:var(--s-xs)}
 .f-foot{padding:var(--s-sm) var(--s-md) calc(var(--s-md) + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:var(--s-xs);background:var(--bg)}
-.buy{display:flex;align-items:center;gap:var(--s-sm);padding:var(--s-sm) var(--s-sm) var(--s-sm) var(--s-md);border-radius:var(--r-md);background:var(--brand);color:var(--inv)}
-.buy p{flex:1;margin:0;font-size:13.5px;line-height:18px}
-.buy .key{flex:none;display:grid;place-items:center;min-width:72px;height:52px;padding:0 10px;border-radius:10px;background:var(--sup);color:var(--tx);font-size:28px;font-weight:800;letter-spacing:-.02em}
 .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;border-radius:var(--r-md);font-size:15.5px;font-weight:700;transition:transform .12s,background .2s}
 .btn:active{transform:scale(.98)}
 .btn-p{background:var(--brand);color:var(--inv)}
@@ -177,8 +167,8 @@ button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 <div id="phone" aria-live="polite"></div>
 <script>
 /* =========================================================
-   AlergiCheck · Prototipo 8 · Pantalla de la máquina
-   Datos de demostración: productos, precios y fichas ficticios.
+   AlergiCheck · Prototipo 8 · Pantalla informativa de alérgenos
+   Datos de demostración: productos y fichas ficticios.
    ========================================================= */
 const ALG=[['lacteos','Lácteos'],['gluten','Gluten'],['huevo','Huevo'],['mani','Maní'],['frutos-secos','Frutos secos'],['soya','Soya'],['pescado','Pescado'],['mariscos','Mariscos'],['moluscos','Moluscos'],['ajonjoli','Ajonjolí'],['mostaza','Mostaza'],['apio','Apio'],['sulfitos','Sulfitos'],['altramuz','Altramuz']];
 const AN=Object.fromEntries(ALG);
@@ -207,7 +197,6 @@ const I={
  q:(c,s=12)=>`<svg width="${s}" height="${s}" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="${c}" stroke-width="1.5"/><path d="M5.3 5.4a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1M7 10.3h.01" stroke="${c}" stroke-width="1.5" stroke-linecap="round"/></svg>`,
  grid:(c='#fff')=>`<svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><rect x="2" y="2" width="6" height="6" rx="1" stroke="${c}" stroke-width="2"/><rect x="10" y="2" width="6" height="6" rx="1" stroke="${c}" stroke-width="2"/><rect x="2" y="10" width="6" height="6" rx="1" stroke="${c}" stroke-width="2"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="${c}" stroke-width="2"/></svg>`,
  back:'<svg width="9" height="15" viewBox="0 0 10 16" fill="none" aria-hidden="true"><path d="M8.5 1.5L2 8l6.5 6.5" stroke="#1b1916" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
- keypad:'<svg width="22" height="24" viewBox="0 0 22 24" fill="none" aria-hidden="true"><rect x="2" y="1.5" width="18" height="21" rx="3" stroke="#fff" stroke-width="1.8"/><path d="M6.5 7h.01M11 7h.01M15.5 7h.01M6.5 11.5h.01M11 11.5h.01M15.5 11.5h.01M6.5 16h.01M11 16h.01M15.5 16h.01" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>',
  flag:'<svg width="16" height="18" viewBox="0 0 16 18" fill="none" aria-hidden="true"><path d="M2 17V1.5M2 2h10l-2 4 2 4H2" stroke="#1b1916" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/></svg>'
 };
 
@@ -222,23 +211,22 @@ const ART={
 };
 const art=(p,s=1)=>ART[p.art](p.color,s);
 
-/* Catálogo de la Máquina 03 (demo) */
+/* Catálogo de productos (demo) */
 const P=[
- {id:'A1',name:'Galletas de avena',price:2.00,art:'paquete',color:'#e9d6c4',meta:'Dulce · 45 g',c:['gluten'],m:['frutos-secos'],ing:'Harina de trigo, hojuelas de avena, azúcar rubia, aceite vegetal y canela. Elaborado en una planta que procesa frutos secos.'},
- {id:'A2',name:'Chifles con sal',price:2.50,art:'bolsa',color:'#f3dc8f',meta:'Salado · 50 g',c:[],m:[],ing:'Plátano verde, aceite vegetal y sal de maras.'},
- {id:'A3',name:'Mix de frutos secos',price:4.50,art:'bolsa',color:'#cfe0bf',meta:'Salado · 60 g',c:['frutos-secos'],m:['mani'],ing:'Almendras, castañas, pecanas y pasas. Puede contener maní.'},
- {id:'B1',name:'Alfajor de maicena',price:2.00,art:'galletas',color:'#efc4b2',meta:'Dulce · 40 g',c:['lacteos','gluten','huevo'],m:['soya'],ing:'Harina de trigo, maicena, mantequilla, manjar blanco (leche), huevo y azúcar. Puede contener soya.'},
- {id:'B2',name:'Barra de quinua',price:2.50,art:'barra',color:'#d9cdef',meta:'Dulce · 40 g',c:['ajonjoli'],m:['frutos-secos'],ing:'Quinua inflada, miel de abeja, pasas y ajonjolí. Elaborado en una planta que también procesa frutos secos.'},
- {id:'B3',name:'Papas al hilo',price:3.00,art:'bolsa',color:'#bfd9ee',meta:'Salado · 45 g',c:[],m:['gluten'],ing:'Papa amarilla, aceite vegetal y sal. Se fríe en la misma línea que productos con trigo.'},
- {id:'C1',name:'Chocolate con leche',price:3.50,art:'barra',color:'#ecd2b8',meta:'Dulce · 35 g',c:['lacteos','soya'],m:['mani','frutos-secos'],ing:'Azúcar, manteca de cacao, leche en polvo, pasta de cacao y lecitina de soya. Puede contener maní y frutos secos.'},
- {id:'C2',name:'Galletas de arroz',price:2.50,art:'galletas',color:'#f4e3a1',meta:'Salado · 30 g',c:[],m:[],ing:'Arroz integral inflado y sal marina.'},
- {id:'C3',name:'Wafer de vainilla',price:1.50,art:'barra',color:'#cfe2b9',meta:'Dulce · 30 g',pending:true},
- {id:'D1',name:'Agua sin gas',price:2.00,art:'botella',color:'#f2c3b6',meta:'Bebida · 625 ml',c:[],m:[],ing:'Agua de mesa tratada.'},
- {id:'D2',name:'Yogurt bebible',price:3.50,art:'botella',color:'#ddd3ee',meta:'Bebida · 180 g',c:['lacteos'],m:[],ing:'Leche entera, azúcar, pulpa de fresa y cultivos lácticos.'},
- {id:'D3',name:'Sándwich de atún',price:4.50,art:'triangulo',color:'#b9d4e6',meta:'Salado · 150 g',c:['pescado','gluten','huevo'],m:['mostaza'],ing:'Pan de molde (trigo), atún, mayonesa (huevo), lechuga y tomate. Puede contener mostaza.'}
+ {id:'A1',name:'Galletas de avena',art:'paquete',color:'#e9d6c4',meta:'Dulce · 45 g',c:['gluten'],m:['frutos-secos'],ing:'Harina de trigo, hojuelas de avena, azúcar rubia, aceite vegetal y canela. Elaborado en una planta que procesa frutos secos.'},
+ {id:'A2',name:'Chifles con sal',art:'bolsa',color:'#f3dc8f',meta:'Salado · 50 g',c:[],m:[],ing:'Plátano verde, aceite vegetal y sal de maras.'},
+ {id:'A3',name:'Mix de frutos secos',art:'bolsa',color:'#cfe0bf',meta:'Salado · 60 g',c:['frutos-secos'],m:['mani'],ing:'Almendras, castañas, pecanas y pasas. Puede contener maní.'},
+ {id:'B1',name:'Alfajor de maicena',art:'galletas',color:'#efc4b2',meta:'Dulce · 40 g',c:['lacteos','gluten','huevo'],m:['soya'],ing:'Harina de trigo, maicena, mantequilla, manjar blanco (leche), huevo y azúcar. Puede contener soya.'},
+ {id:'B2',name:'Barra de quinua',art:'barra',color:'#d9cdef',meta:'Dulce · 40 g',c:['ajonjoli'],m:['frutos-secos'],ing:'Quinua inflada, miel de abeja, pasas y ajonjolí. Elaborado en una planta que también procesa frutos secos.'},
+ {id:'B3',name:'Papas al hilo',art:'bolsa',color:'#bfd9ee',meta:'Salado · 45 g',c:[],m:['gluten'],ing:'Papa amarilla, aceite vegetal y sal. Se fríe en la misma línea que productos con trigo.'},
+ {id:'C1',name:'Chocolate con leche',art:'barra',color:'#ecd2b8',meta:'Dulce · 35 g',c:['lacteos','soya'],m:['mani','frutos-secos'],ing:'Azúcar, manteca de cacao, leche en polvo, pasta de cacao y lecitina de soya. Puede contener maní y frutos secos.'},
+ {id:'C2',name:'Galletas de arroz',art:'galletas',color:'#f4e3a1',meta:'Salado · 30 g',c:[],m:[],ing:'Arroz integral inflado y sal marina.'},
+ {id:'C3',name:'Wafer de vainilla',art:'barra',color:'#cfe2b9',meta:'Dulce · 30 g',pending:true},
+ {id:'D1',name:'Agua sin gas',art:'botella',color:'#f2c3b6',meta:'Bebida · 625 ml',c:[],m:[],ing:'Agua de mesa tratada.'},
+ {id:'D2',name:'Yogurt bebible',art:'botella',color:'#ddd3ee',meta:'Bebida · 180 g',c:['lacteos'],m:[],ing:'Leche entera, azúcar, pulpa de fresa y cultivos lácticos.'},
+ {id:'D3',name:'Sándwich de atún',art:'triangulo',color:'#b9d4e6',meta:'Salado · 150 g',c:['pescado','gluten','huevo'],m:['mostaza'],ing:'Pan de molde (trigo), atún, mayonesa (huevo), lechuga y tomate. Puede contener mostaza.'}
 ];
 const byId=Object.fromEntries(P.map(p=>[p.id,p]));
-const sol=n=>'S/ '+n.toFixed(2);
 
 /* ---------------- Estado ---------------- */
 const S={screen:'rest',F:new Set(),prod:null,prevF:''};
@@ -272,9 +260,9 @@ function paintIdle(){
 ['pointerdown','keydown','scroll'].forEach(e=>document.addEventListener(e,()=>{if(S.screen!=='rest')resetIdle()},{capture:true,passive:true}));
 
 /* ---------------- Pantallas ---------------- */
-const topBar=()=>`<div class="top"><div class="brand"><span class="logo">${I.shield('#fff',15)}</span>AlergiCheck</div><div class="where">Máquina 03 · Pab. A, 2.° piso</div></div>`;
+const topBar=()=>`<div class="top"><div class="brand"><span class="logo">${I.shield('#fff',15)}</span>AlergiCheck</div><div class="where">Guía de alérgenos</div></div>`;
 
-function slotHTML(p,i){
+function cardHTML(p,i){
   const v=verdict(p);let st='';
   if(v.k==='ne'){
     if(p.pending)st=`<span class="pend">Ficha pendiente</span>`;
@@ -286,8 +274,7 @@ function slotHTML(p,i){
   else if(v.k==='nd')st=`<span class="pill p-nd">${I.q('#5e574e',11)}Sin ficha</span>`;
   const cls=v.k==='ne'?'':v.k;
   const sr={ne:'',ok:'Apto para ti.',tr:'Puede contener trazas.',no:'No apto para ti.',nd:'Sin ficha de alérgenos.'}[v.k];
-  return `<button class="slot ${cls}" style="--i:${i}" data-id="${p.id}" aria-label="${p.id}, ${p.name}, ${sol(p.price)}. ${sr}">
-    <span class="hd"><span class="code">${p.id}</span><span class="price num">${sol(p.price)}</span></span>
+  return `<button class="card ${cls}" style="--i:${i}" data-id="${p.id}" aria-label="${p.name}. ${sr}">
     <span class="art">${art(p,.9)}</span>
     <span class="nm">${p.name}</span>
     <span class="st">${st}</span></button>`;
@@ -300,9 +287,9 @@ function rest(){
    ${topBar()}
    <div class="rest-body">
      <h1 class="rest-h">¿Sabes qué contiene tu snack?</h1>
-     <p class="rest-p">Revisa los alérgenos de cada producto de esta máquina antes de comprar.</p>
+     <p class="rest-p">Revisa los alérgenos de cada producto antes de elegir.</p>
      <div class="icons-row">${five.map(k=>`<span class="ic-b"><span class="c">${ic(k,22)}</span>${AN[k]}</span>`).join('')}</div>
-     <div class="ghost" aria-hidden="true">${P.slice(0,3).map((p,i)=>slotHTML(p,i).replace('<button','<div').replace('</button>','</div>')).join('')}</div>
+     <div class="ghost" aria-hidden="true">${P.slice(0,3).map((p,i)=>cardHTML(p,i).replace('<button','<div').replace('</button>','</div>')).join('')}</div>
    </div>
    <div class="rest-foot">
      <span class="start">${I.grid()}Toca para empezar</span>
@@ -329,7 +316,7 @@ function catalog(keepScroll){
   const fScroll=$('.f-row')?.scrollLeft||0;
   const [h,sub]=headCopy();
   let g='',i=0;
-  ['A','B','C','D'].forEach(r=>{g+=`<span class="shelf" aria-hidden="true">Bandeja ${r}</span>`;P.filter(p=>p.id[0]===r).forEach(p=>g+=slotHTML(p,i++))});
+  [['Dulce','Dulces'],['Salado','Salados'],['Bebida','Bebidas']].forEach(([t,n])=>{g+=`<span class="shelf" aria-hidden="true">${n}</span>`;P.filter(p=>p.meta.startsWith(t)).forEach(p=>g+=cardHTML(p,i++))});
   phone.innerHTML=`<div class="view"${fresh?'':' style="animation:none"'}>
    ${topBar()}
    <div class="scroll">
@@ -348,7 +335,7 @@ function catalog(keepScroll){
   row.querySelectorAll('.fb').forEach(b=>b.onclick=()=>toggle(b.dataset.a));
   $('#clear').onclick=()=>{S.prevF=[...S.F].join();S.F.clear();catalog(true)};
   $('#stay').onclick=resetIdle;
-  phone.querySelectorAll('.slot').forEach(b=>b.onclick=()=>ficha(b.dataset.id));
+  phone.querySelectorAll('.card').forEach(b=>b.onclick=()=>ficha(b.dataset.id));
   if(fresh)startIdle();else paintIdle();
 }
 
@@ -356,8 +343,8 @@ function toggle(a){
   const before=new Map(P.map(p=>[p.id,verdict(p).k]));
   S.F.has(a)?S.F.delete(a):S.F.add(a);
   catalog(true);
-  /* las ranuras que pasan a ser aptas se "encienden" */
-  phone.querySelectorAll('.slot.ok').forEach(el=>{if(before.get(el.dataset.id)!=='ok')el.classList.add('lit')});
+  /* las tarjetas que pasan a ser aptas se "encienden" */
+  phone.querySelectorAll('.card.ok').forEach(el=>{if(before.get(el.dataset.id)!=='ok')el.classList.add('lit')});
   const fb=phone.querySelector(`.fb[data-a="${a}"]`);fb&&fb.focus({preventScroll:true});
 }
 
@@ -385,13 +372,12 @@ function ficha(id){
     const restN=ALG.length-order.length;
     rows+=`<div class="rest-note">${order.length?`No contiene ninguno de los otros ${restN} alérgenos.`:'No contiene ninguno de los 14 alérgenos principales.'}</div>`;
     extra=`<div class="ing"><h4>Ingredientes</h4><p>${p.ing}</p><div class="ver2">${I.shield('#1c7a47',13)}Verificada por la cafetería · actualizada hoy, 7:30 a. m.</div></div>`;
-    const buy=`<div class="buy"><span>${I.keypad}</span><p>Para comprarlo, marca en el teclado de la máquina</p><span class="key" aria-label="código ${p.id}">${p.id}</span></div>`;
-    foot=v.k==='no'?`<button class="btn btn-p" id="opts">${I.grid()}Ver opciones aptas para ti</button>`:buy;
+    foot=`<button class="btn btn-p" id="opts">${I.grid()}${v.k==='no'?'Ver opciones aptas para ti':'Ver otros productos'}</button>`;
   }
   phone.innerHTML=`<div class="view">
    <div class="f-top"><button class="back" id="back">${I.back}Volver</button><span class="timer">Vuelve al inicio en <b class="num" id="timerN">${left}</b> s</span></div>
    <div class="scroll"><div class="ficha">
-     <div class="hero"><span class="big">${art(p,2)}</span><div><span class="code">${p.id}</span><h2>${p.name}</h2><div class="meta">${p.meta}</div><div class="pr num">${sol(p.price)}</div></div></div>
+     <div class="hero"><span class="big">${art(p,2)}</span><div><h2>${p.name}</h2><div class="meta">${p.meta}</div></div></div>
      <div class="verdict v-${vb[0]}" role="status"><span class="vi">${icn[p.pending?'nd':vb[0]]}</span><div><h3>${vb[1]}</h3><p>${vb[2]}</p></div></div>
      <h3 class="sec-h">Alérgenos de la ficha</h3>
      <div class="table">${rows}</div>
@@ -415,7 +401,7 @@ function sent(p){
      <span class="halo"><span>${I.check('#fff',36,2.4)}</span></span>
      <h2>Listo, avisamos a la cafetería</h2>
      <p>El personal registrará los alérgenos del ${p.name} hoy mismo.</p>
-     <div class="tip">${I.q('#a15c00',20)}<div><b>Antes de comprarlo</b><span>Revisa la etiqueta del empaque o pregunta en la cafetería del 5.° piso.</span></div></div>
+     <div class="tip">${I.q('#a15c00',20)}<div><b>Antes de consumirlo</b><span>Revisa la etiqueta del empaque o pregunta en la cafetería del 5.° piso.</span></div></div>
    </div>
    <div class="f-foot"><button class="btn btn-p" id="opts">${I.grid()}Ver opciones aptas para ti</button><button class="btn btn-s" id="home">Volver al inicio</button></div>
    <div class="idle low" role="status"><p>¿Sigues ahí? Volvemos al inicio en <b class="num">10 s</b></p><button id="stay">Seguir aquí</button></div>
