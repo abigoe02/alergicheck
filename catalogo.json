@@ -1,0 +1,1323 @@
+{
+ "cafeteria": "Jacinto & Cornelia",
+ "sede": "UPC San Isidro",
+ "nota": "Fichas de prueba armadas con las etiquetas de la vitrina y la carta. Los alérgenos deben confirmarse con la cafetería.",
+ "productos": [
+  {
+   "id": "sandwich-hamburguesa",
+   "nombre": "Sandwich Hamburguesa",
+   "categoria": "Salados",
+   "precio": 10.0,
+   "ingredientes": "Pan, hamburguesa de carne, papas al hilo, lechuga y tomate",
+   "contiene": [
+    "gluten"
+   ],
+   "puede_contener": [
+    "huevo",
+    "lacteos",
+    "soya",
+    "ajonjoli",
+    "mostaza"
+   ],
+   "visual": "pan de hamburguesa en bolsa"
+  },
+  {
+   "id": "sandwich-chorizo",
+   "nombre": "Sandwich de Chorizo",
+   "categoria": "Salados",
+   "precio": 8.5,
+   "ingredientes": "Pan y chorizo",
+   "contiene": [
+    "gluten"
+   ],
+   "puede_contener": [
+    "soya",
+    "mostaza",
+    "lacteos"
+   ],
+   "visual": "pan con chorizo en bolsa"
+  },
+  {
+   "id": "hot-dog-kilometrico",
+   "nombre": "Hot Dog Kilométrico con papas al hilo",
+   "categoria": "Salados",
+   "precio": 8.5,
+   "ingredientes": "Pan alargado, salchicha y papas al hilo",
+   "contiene": [
+    "gluten"
+   ],
+   "puede_contener": [
+    "lacteos",
+    "soya",
+    "mostaza"
+   ],
+   "visual": "pan largo con salchicha en bolsa"
+  },
+  {
+   "id": "pizzeta-americana",
+   "nombre": "Pizzeta Americana",
+   "categoria": "Salados",
+   "precio": 9.0,
+   "ingredientes": "Masa, salsa de tomate, jamón y queso",
+   "contiene": [
+    "gluten",
+    "lacteos"
+   ],
+   "puede_contener": [
+    "huevo",
+    "soya"
+   ],
+   "visual": "pizza pequeña redonda con queso gratinado"
+  },
+  {
+   "id": "pizzeta-jamon-queso",
+   "nombre": "Pizzeta Jamón y Queso",
+   "categoria": "Salados",
+   "precio": 9.0,
+   "ingredientes": "Masa, salsa de tomate, jamón y queso",
+   "contiene": [
+    "gluten",
+    "lacteos"
+   ],
+   "puede_contener": [
+    "huevo",
+    "soya"
+   ],
+   "visual": "pizza pequeña redonda"
+  },
+  {
+   "id": "pizzeta-pepperoni",
+   "nombre": "Pizzeta Pepperoni",
+   "categoria": "Salados",
+   "precio": 9.0,
+   "ingredientes": "Masa, salsa de tomate, pepperoni y queso",
+   "contiene": [
+    "gluten",
+    "lacteos"
+   ],
+   "puede_contener": [
+    "huevo",
+    "soya"
+   ],
+   "visual": "pizza pequeña con pepperoni"
+  },
+  {
+   "id": "empanada-jamon-queso",
+   "nombre": "Empanada de Jamón y Queso",
+   "categoria": "Empanadas",
+   "precio": 7.5,
+   "ingredientes": "Masa de empanada, jamón y queso",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo"
+   ],
+   "puede_contener": [
+    "soya"
+   ],
+   "visual": "empanada dorada en bolsa transparente"
+  },
+  {
+   "id": "empanada-pollo",
+   "nombre": "Empanada de Pollo",
+   "categoria": "Empanadas",
+   "precio": 7.5,
+   "ingredientes": "Masa de empanada y relleno de pollo",
+   "contiene": [
+    "gluten",
+    "huevo"
+   ],
+   "puede_contener": [
+    "lacteos",
+    "soya"
+   ],
+   "visual": "empanada dorada en bolsa transparente"
+  },
+  {
+   "id": "empanada-carne",
+   "nombre": "Empanada de Carne",
+   "categoria": "Empanadas",
+   "precio": 7.5,
+   "ingredientes": "Masa de empanada y relleno de carne",
+   "contiene": [
+    "gluten",
+    "huevo"
+   ],
+   "puede_contener": [
+    "lacteos",
+    "soya"
+   ],
+   "visual": "empanada dorada en bolsa"
+  },
+  {
+   "id": "empanada-lomo-saltado",
+   "nombre": "Empanada de Lomo Saltado",
+   "categoria": "Empanadas",
+   "precio": 8.0,
+   "ingredientes": "Masa integral de empanada y lomo saltado (carne, cebolla, tomate, sillao)",
+   "contiene": [
+    "gluten",
+    "huevo",
+    "soya"
+   ],
+   "puede_contener": [
+    "lacteos"
+   ],
+   "visual": "empanada de masa integral con puntitos"
+  },
+  {
+   "id": "empanada-champinones",
+   "nombre": "Empanada de Pollo con Champiñones",
+   "categoria": "Empanadas",
+   "precio": 8.0,
+   "ingredientes": "Masa de empanada, pollo y champiñones",
+   "contiene": [
+    "gluten",
+    "huevo",
+    "lacteos"
+   ],
+   "puede_contener": [
+    "soya"
+   ],
+   "visual": "empanada clara en bolsa"
+  },
+  {
+   "id": "empanada-aji-gallina",
+   "nombre": "Empanada de Ají de Gallina",
+   "categoria": "Empanadas",
+   "precio": 8.0,
+   "ingredientes": "Masa de empanada y ají de gallina (pollo, ají amarillo, leche, queso, pan)",
+   "contiene": [
+    "gluten",
+    "huevo",
+    "lacteos"
+   ],
+   "puede_contener": [
+    "frutos-secos"
+   ],
+   "visual": "empanada dorada en bolsa"
+  },
+  {
+   "id": "empanada-vegetariana",
+   "nombre": "Empanada Integral Vegetariana",
+   "categoria": "Empanadas",
+   "precio": 8.0,
+   "ingredientes": "Masa integral y relleno de verduras",
+   "contiene": [
+    "gluten",
+    "huevo"
+   ],
+   "puede_contener": [
+    "lacteos"
+   ],
+   "visual": "empanada integral"
+  },
+  {
+   "id": "sandwich-lomo-ahumado",
+   "nombre": "Sándwich Lomo Ahumado Tropical",
+   "categoria": "Salados",
+   "precio": 11.0,
+   "ingredientes": "Pan, lomo ahumado, tocino, mermelada de piña y un toque picante de ají limo",
+   "contiene": [
+    "gluten"
+   ],
+   "puede_contener": [
+    "lacteos",
+    "huevo",
+    "soya"
+   ],
+   "visual": "sándwich de pan con lomo ahumado y tocino"
+  },
+  {
+   "id": "pita-capresse",
+   "nombre": "Pita Capresse",
+   "categoria": "Salados",
+   "precio": 9.0,
+   "ingredientes": "Pan pita, tomate, queso mozzarella y albahaca",
+   "contiene": [
+    "gluten",
+    "lacteos"
+   ],
+   "puede_contener": [],
+   "visual": "pan pita redondo y blanco con tomate"
+  },
+  {
+   "id": "wrap-oriental",
+   "nombre": "Wrap Oriental",
+   "categoria": "Wraps",
+   "precio": 14.5,
+   "ingredientes": "Tortilla, lechuga, zanahoria, col morada, cerdo y salsa oriental",
+   "contiene": [
+    "gluten",
+    "soya"
+   ],
+   "puede_contener": [
+    "ajonjoli"
+   ],
+   "visual": "wrap envuelto en papel blanco con dibujos"
+  },
+  {
+   "id": "wrap-pollo-crispy",
+   "nombre": "Wrap Pollo Crispy",
+   "categoria": "Wraps",
+   "precio": 14.0,
+   "ingredientes": "Tortilla, deditos de pollo crispy, lechuga, queso cheddar, zanahoria, tomate y salsa vinagreta",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo"
+   ],
+   "puede_contener": [
+    "mostaza",
+    "soya"
+   ],
+   "visual": "wrap envuelto en papel blanco"
+  },
+  {
+   "id": "wrap-napolitano",
+   "nombre": "Wrap Napolitano",
+   "categoria": "Wraps",
+   "precio": 14.0,
+   "ingredientes": "Tortilla, trozos de pechuga, espinaca y queso edam",
+   "contiene": [
+    "gluten",
+    "lacteos"
+   ],
+   "puede_contener": [
+    "huevo"
+   ],
+   "visual": "wrap envuelto"
+  },
+  {
+   "id": "panini-pechuga-champinones",
+   "nombre": "Panini Pechuga Pollo con Queso y Champiñones",
+   "categoria": "Paninis",
+   "precio": 11.0,
+   "ingredientes": "Pan panini, pechuga de pollo, queso y champiñones",
+   "contiene": [
+    "gluten",
+    "lacteos"
+   ],
+   "puede_contener": [
+    "huevo",
+    "soya"
+   ],
+   "visual": "pan panini blanco en bolsa"
+  },
+  {
+   "id": "panini-pollo-jamon-queso",
+   "nombre": "Panini Pollo, Jamón y Queso",
+   "categoria": "Paninis",
+   "precio": 9.5,
+   "ingredientes": "Pan panini, pollo, jamón y queso",
+   "contiene": [
+    "gluten",
+    "lacteos"
+   ],
+   "puede_contener": [
+    "huevo",
+    "soya"
+   ],
+   "visual": "pan panini en bolsa"
+  },
+  {
+   "id": "croissant-full-quesos",
+   "nombre": "Croissant Full Quesos",
+   "categoria": "Croissants",
+   "precio": 9.0,
+   "ingredientes": "Croissant y quesos",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo"
+   ],
+   "puede_contener": [
+    "soya"
+   ],
+   "visual": "croissant grande dorado en bolsa"
+  },
+  {
+   "id": "croissant-full-jamones",
+   "nombre": "Croissant Full Jamones",
+   "categoria": "Croissants",
+   "precio": 9.0,
+   "ingredientes": "Croissant y jamones",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo"
+   ],
+   "puede_contener": [
+    "soya"
+   ],
+   "visual": "croissant grande con jamón"
+  },
+  {
+   "id": "croissant-pollo-papas",
+   "nombre": "Croissant de Pollo con Papas al Hilo",
+   "categoria": "Croissants",
+   "precio": 9.5,
+   "ingredientes": "Croissant, pollo, mayonesa y papas al hilo",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo"
+   ],
+   "puede_contener": [
+    "soya",
+    "mostaza"
+   ],
+   "visual": "croissant relleno de pollo"
+  },
+  {
+   "id": "croissant-eggmont",
+   "nombre": "Croissant Eggmont",
+   "categoria": "Croissants",
+   "precio": 8.5,
+   "ingredientes": "Croissant, mix de huevo, jamón en trozos, mayonesa y mostaza",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo",
+    "mostaza"
+   ],
+   "puede_contener": [
+    "soya"
+   ],
+   "visual": "croissant relleno de huevo amarillo"
+  },
+  {
+   "id": "croissant-mixto",
+   "nombre": "Croissant Mixto",
+   "categoria": "Croissants",
+   "precio": 8.5,
+   "ingredientes": "Croissant, jamón y queso",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo"
+   ],
+   "puede_contener": [
+    "soya"
+   ],
+   "visual": "croissant con jamón y queso"
+  },
+  {
+   "id": "ciabatta-pavo",
+   "nombre": "Ciabatta de Pavo al Horno",
+   "categoria": "Salados",
+   "precio": 9.0,
+   "ingredientes": "Pan ciabatta y pavo al horno",
+   "contiene": [
+    "gluten"
+   ],
+   "puede_contener": [
+    "lacteos",
+    "huevo",
+    "mostaza"
+   ],
+   "visual": "pan ciabatta rectangular enharinado"
+  },
+  {
+   "id": "ciabatta-albondigas",
+   "nombre": "Ciabatta de Albóndigas o Carne Mechada",
+   "categoria": "Salados",
+   "precio": 11.0,
+   "ingredientes": "Pan ciabatta con albóndigas o carne mechada en salsa",
+   "contiene": [
+    "gluten"
+   ],
+   "puede_contener": [
+    "huevo",
+    "lacteos",
+    "apio"
+   ],
+   "visual": "pan ciabatta con carne"
+  },
+  {
+   "id": "sandwich-asado",
+   "nombre": "Sandwich Asado",
+   "categoria": "Salados",
+   "precio": 11.0,
+   "ingredientes": "Ciabatta con asado de res, lechuga y tomate",
+   "contiene": [
+    "gluten"
+   ],
+   "puede_contener": [
+    "lacteos",
+    "mostaza"
+   ],
+   "visual": "pan ciabatta grande con carne oscura"
+  },
+  {
+   "id": "enrollado-pollo",
+   "nombre": "Enrollado de Pollo",
+   "categoria": "Enrollados",
+   "precio": 9.5,
+   "ingredientes": "Masa enrollada y pollo",
+   "contiene": [
+    "gluten"
+   ],
+   "puede_contener": [
+    "huevo",
+    "lacteos"
+   ],
+   "visual": "enrollado en papel blanco con letras rojas"
+  },
+  {
+   "id": "enrollado-pollo-picante",
+   "nombre": "Enrollado de Pollo Picante",
+   "categoria": "Enrollados",
+   "precio": 9.5,
+   "ingredientes": "Masa enrollada y pollo picante",
+   "contiene": [
+    "gluten"
+   ],
+   "puede_contener": [
+    "huevo",
+    "lacteos"
+   ],
+   "visual": "enrollado en papel blanco con letras rojas"
+  },
+  {
+   "id": "enrollado-chancho",
+   "nombre": "Enrollado de Chancho al Cilindro",
+   "categoria": "Enrollados",
+   "precio": 9.5,
+   "ingredientes": "Masa enrollada y chancho al cilindro",
+   "contiene": [
+    "gluten"
+   ],
+   "puede_contener": [
+    "huevo",
+    "lacteos",
+    "soya"
+   ],
+   "visual": "enrollado en papel blanco con letras rojas"
+  },
+  {
+   "id": "triple-pavo",
+   "nombre": "Triple Integral Jamón de Pavo, Huevo y Queso",
+   "categoria": "Triples",
+   "precio": 8.5,
+   "ingredientes": "Pan de molde integral, jamón de pavo, huevo, queso y mayonesa",
+   "contiene": [
+    "gluten",
+    "huevo",
+    "lacteos"
+   ],
+   "puede_contener": [],
+   "visual": "sándwich triple triangular de pan integral"
+  },
+  {
+   "id": "triple-durazno",
+   "nombre": "Triple Durazno",
+   "categoria": "Triples",
+   "precio": 8.5,
+   "ingredientes": "Pan de molde, durazno, pollo, jamón, queso y mayonesa",
+   "contiene": [
+    "gluten",
+    "huevo",
+    "lacteos"
+   ],
+   "puede_contener": [],
+   "visual": "sándwich triple triangular con capa morada/naranja"
+  },
+  {
+   "id": "triple-pollo",
+   "nombre": "Triple Pollo, Jamón y Queso",
+   "categoria": "Triples",
+   "precio": 8.5,
+   "ingredientes": "Pan de molde, pollo, jamón, queso y mayonesa",
+   "contiene": [
+    "gluten",
+    "huevo",
+    "lacteos"
+   ],
+   "puede_contener": [],
+   "visual": "sándwich triple triangular"
+  },
+  {
+   "id": "triple-espinaca",
+   "nombre": "Triple Integral Espinaca",
+   "categoria": "Triples",
+   "precio": 8.5,
+   "ingredientes": "Pan de molde integral, espinaca, huevo, pollo y mayonesa",
+   "contiene": [
+    "gluten",
+    "huevo"
+   ],
+   "puede_contener": [
+    "lacteos"
+   ],
+   "visual": "sándwich triple con capa verde de espinaca"
+  },
+  {
+   "id": "triple-aceituna",
+   "nombre": "Triple Aceituna",
+   "categoria": "Triples",
+   "precio": 8.5,
+   "ingredientes": "Pan de molde, aceituna, huevo, pollo y mayonesa",
+   "contiene": [
+    "gluten",
+    "huevo"
+   ],
+   "puede_contener": [
+    "lacteos"
+   ],
+   "visual": "sándwich triple con capa morada de aceituna"
+  },
+  {
+   "id": "triple-tocino",
+   "nombre": "Triple Tocino",
+   "categoria": "Triples",
+   "precio": 8.5,
+   "ingredientes": "Pan de molde, tocino, huevo, jamón, queso y mayonesa",
+   "contiene": [
+    "gluten",
+    "huevo",
+    "lacteos"
+   ],
+   "puede_contener": [],
+   "visual": "sándwich triple con capa de tocino"
+  },
+  {
+   "id": "palito-queso",
+   "nombre": "Palito de Queso",
+   "categoria": "Salados",
+   "precio": 4.5,
+   "ingredientes": "Masa hojaldrada y queso",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo"
+   ],
+   "puede_contener": [],
+   "visual": "palito de masa con queso"
+  },
+  {
+   "id": "quiche-poro",
+   "nombre": "Quiche de Poro",
+   "categoria": "Salados",
+   "precio": 9.0,
+   "ingredientes": "Masa, poro, huevo, leche y queso",
+   "contiene": [
+    "gluten",
+    "huevo",
+    "lacteos"
+   ],
+   "puede_contener": [],
+   "visual": "porción de quiche"
+  },
+  {
+   "id": "pastel-acelga",
+   "nombre": "Pastel de Acelga",
+   "categoria": "Salados",
+   "precio": 8.5,
+   "ingredientes": "Masa, acelga, huevo y queso",
+   "contiene": [
+    "gluten",
+    "huevo",
+    "lacteos"
+   ],
+   "puede_contener": [],
+   "visual": "porción triangular de pastel con relleno verde oscuro"
+  },
+  {
+   "id": "megamixto",
+   "nombre": "Megamixto",
+   "categoria": "Salados",
+   "precio": 9.0,
+   "ingredientes": "Pan, jamón y queso",
+   "contiene": [
+    "gluten",
+    "lacteos"
+   ],
+   "puede_contener": [
+    "huevo"
+   ],
+   "visual": "sándwich mixto grande"
+  },
+  {
+   "id": "ensalada-mixta",
+   "nombre": "Ensalada Mixta",
+   "categoria": "Ensaladas y bowls",
+   "precio": 16.0,
+   "ingredientes": "Lechuga, zanahoria, tomate cherry, huevo, aceituna negra, choclo americano, tocino, pollo y salsa vinagreta",
+   "contiene": [
+    "huevo"
+   ],
+   "puede_contener": [
+    "mostaza"
+   ],
+   "visual": "bowl de cartón con tapa transparente, verduras y choclo"
+  },
+  {
+   "id": "ensalada-pavo",
+   "nombre": "Ensalada de Pavo",
+   "categoria": "Ensaladas y bowls",
+   "precio": 16.0,
+   "ingredientes": "Pavo al horno, lechuga, zanahoria, pasas rubias, pecanas, apio y salsa honey mustard",
+   "contiene": [
+    "frutos-secos",
+    "apio",
+    "mostaza"
+   ],
+   "puede_contener": [
+    "sulfitos"
+   ],
+   "visual": "bowl con lechuga y trozos de pavo"
+  },
+  {
+   "id": "ensalada-cesar",
+   "nombre": "Ensalada César",
+   "categoria": "Ensaladas y bowls",
+   "precio": 16.0,
+   "ingredientes": "Pechuga de pollo a la plancha, tocino, queso parmesano, queso edam, croutones y salsa",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo"
+   ],
+   "puede_contener": [
+    "pescado",
+    "mostaza"
+   ],
+   "visual": "bowl con lechuga y queso rallado"
+  },
+  {
+   "id": "ensalada-fideos",
+   "nombre": "Ensalada de Fideos",
+   "categoria": "Ensaladas y bowls",
+   "precio": 16.0,
+   "ingredientes": "Fideo tornillo, tomate cherry, jamón, alverjita, huevo, zanahoria, choclo americano y salsa vinagreta",
+   "contiene": [
+    "gluten",
+    "huevo"
+   ],
+   "puede_contener": [
+    "mostaza"
+   ],
+   "visual": "bowl con fideos tornillo y choclo"
+  },
+  {
+   "id": "bowl-chaufa",
+   "nombre": "Bowl Chaufa Oriental",
+   "categoria": "Ensaladas y bowls",
+   "precio": 18.0,
+   "ingredientes": "Arroz chaufa, trozos de pollo en salsa oriental e hilos de wantán",
+   "contiene": [
+    "soya",
+    "gluten",
+    "huevo"
+   ],
+   "puede_contener": [
+    "ajonjoli"
+   ],
+   "visual": "bowl de cartón con arroz oscuro"
+  },
+  {
+   "id": "bowl-mac-cheese",
+   "nombre": "Bowl Mac and Cheese",
+   "categoria": "Ensaladas y bowls",
+   "precio": 16.0,
+   "ingredientes": "Fideos tornillo, pechuga a la plancha, tocino, salsa cheddar y queso parmesano",
+   "contiene": [
+    "gluten",
+    "lacteos"
+   ],
+   "puede_contener": [
+    "huevo"
+   ],
+   "visual": "bowl de cartón con fideos en salsa amarilla"
+  },
+  {
+   "id": "bowl-bolognesa",
+   "nombre": "Bowl Bolognesa",
+   "categoria": "Ensaladas y bowls",
+   "precio": 14.0,
+   "ingredientes": "Fideos tornillo, salsa bolognesa con carne y queso parmesano",
+   "contiene": [
+    "gluten",
+    "lacteos"
+   ],
+   "puede_contener": [
+    "apio",
+    "huevo"
+   ],
+   "visual": "bowl de cartón con fideos en salsa roja"
+  },
+  {
+   "id": "bowl-arroz",
+   "nombre": "Bowl de Arroz",
+   "categoria": "Ensaladas y bowls",
+   "precio": 18.0,
+   "ingredientes": "Deditos de pollo crispy, arroz shari, pepino kiuri, tomate cherry, col morada, zanahoria, mango, hilos de wantán, ajonjolí negro y salsa vinagreta",
+   "contiene": [
+    "gluten",
+    "huevo",
+    "ajonjoli"
+   ],
+   "puede_contener": [
+    "soya"
+   ],
+   "visual": "bowl tipo poke con arroz y salsa"
+  },
+  {
+   "id": "chia-pudin",
+   "nombre": "Chía Pudín",
+   "categoria": "Postres y yogurts",
+   "precio": 10.0,
+   "ingredientes": "Chía en leche de coco con puré de mango, granola y arándanos",
+   "contiene": [
+    "gluten"
+   ],
+   "puede_contener": [
+    "frutos-secos",
+    "mani"
+   ],
+   "visual": "vaso con chía abajo y mango naranja arriba"
+  },
+  {
+   "id": "yogurt-nutritivo",
+   "nombre": "Yogurt Nutritivo",
+   "categoria": "Postres y yogurts",
+   "precio": 8.0,
+   "ingredientes": "Yogurt de vainilla, chía, avena, fruta y granola",
+   "contiene": [
+    "lacteos",
+    "gluten"
+   ],
+   "puede_contener": [
+    "frutos-secos",
+    "mani"
+   ],
+   "visual": "vaso alto de yogurt blanco con granola y fresas arriba"
+  },
+  {
+   "id": "yogurt-griego-miel",
+   "nombre": "Yogurt Griego Miel",
+   "categoria": "Postres y yogurts",
+   "precio": 7.0,
+   "ingredientes": "Yogurt griego, miel de chancaca y granola",
+   "contiene": [
+    "lacteos",
+    "gluten"
+   ],
+   "puede_contener": [
+    "frutos-secos"
+   ],
+   "visual": "pote redondo de yogurt con faja blanca"
+  },
+  {
+   "id": "yogurt-griego-mango",
+   "nombre": "Yogurt Griego Mango",
+   "categoria": "Postres y yogurts",
+   "precio": 7.0,
+   "ingredientes": "Yogurt griego, mango y granola",
+   "contiene": [
+    "lacteos",
+    "gluten"
+   ],
+   "puede_contener": [
+    "frutos-secos"
+   ],
+   "visual": "pote de yogurt con sticker naranja Mango"
+  },
+  {
+   "id": "yogurt-griego-arandano",
+   "nombre": "Yogurt Griego Arándano / Sauco",
+   "categoria": "Postres y yogurts",
+   "precio": 7.0,
+   "ingredientes": "Yogurt griego, arándano o sauco y granola",
+   "contiene": [
+    "lacteos",
+    "gluten"
+   ],
+   "puede_contener": [
+    "frutos-secos"
+   ],
+   "visual": "pote de yogurt con sticker azul Arándano"
+  },
+  {
+   "id": "cuchareable-dubai",
+   "nombre": "Cuchareable Chocolate Dubái",
+   "categoria": "Postres y yogurts",
+   "precio": 11.0,
+   "ingredientes": "Queque de chocolate, crema pastelera de pistachos, trocitos de pistachos, kataifi y manjar",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo",
+    "frutos-secos"
+   ],
+   "puede_contener": [
+    "soya"
+   ],
+   "visual": "pote de cartón blanco con tapa verde"
+  },
+  {
+   "id": "cuchareable-mango",
+   "nombre": "Cuchareable Crocante de Mango",
+   "categoria": "Postres y yogurts",
+   "precio": 10.0,
+   "ingredientes": "Base crocante, puré de mango, crema chantilly, mango en trozos y manjar blanco",
+   "contiene": [
+    "gluten",
+    "lacteos"
+   ],
+   "puede_contener": [
+    "huevo",
+    "frutos-secos"
+   ],
+   "visual": "pote de cartón blanco con tapa naranja"
+  },
+  {
+   "id": "cuchareable-limon",
+   "nombre": "Cuchareable Chispa de Limón",
+   "categoria": "Postres y yogurts",
+   "precio": 11.0,
+   "ingredientes": "Alfajor, brigadeiro de limón, curd de limón y merengue",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo"
+   ],
+   "puede_contener": [],
+   "visual": "pote de cartón blanco con tapa amarilla"
+  },
+  {
+   "id": "cuchareable-tiramisu",
+   "nombre": "Cuchareable Tiramisú",
+   "categoria": "Postres y yogurts",
+   "precio": 10.0,
+   "ingredientes": "Bizcotela en bebida de café, chocolate, sabayón de queso, crema y cocoa",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo"
+   ],
+   "puede_contener": [
+    "soya"
+   ],
+   "visual": "pote de cartón blanco con tapa roja o celeste"
+  },
+  {
+   "id": "torta-castana",
+   "nombre": "Torta de Castaña",
+   "categoria": "Postres y yogurts",
+   "precio": 9.0,
+   "ingredientes": "Queque con castañas",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo",
+    "frutos-secos"
+   ],
+   "puede_contener": [],
+   "visual": "porción de torta oscura con castañas en envase"
+  },
+  {
+   "id": "brownie",
+   "nombre": "Brownie",
+   "categoria": "Postres y yogurts",
+   "precio": 5.5,
+   "ingredientes": "Chocolate, harina, huevo y mantequilla",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo"
+   ],
+   "puede_contener": [
+    "frutos-secos",
+    "soya"
+   ],
+   "visual": "brownie de chocolate"
+  },
+  {
+   "id": "alfajor",
+   "nombre": "Alfajor Clásico",
+   "categoria": "Postres y yogurts",
+   "precio": 6.0,
+   "ingredientes": "Galleta de maicena, manjar blanco",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo"
+   ],
+   "puede_contener": [],
+   "visual": "alfajor con azúcar en polvo"
+  },
+  {
+   "id": "muffin",
+   "nombre": "Muffin",
+   "categoria": "Postres y yogurts",
+   "precio": 6.5,
+   "ingredientes": "Harina, huevo, leche y azúcar",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo"
+   ],
+   "puede_contener": [
+    "frutos-secos",
+    "soya"
+   ],
+   "visual": "muffin en papel"
+  },
+  {
+   "id": "galleton",
+   "nombre": "Galletón",
+   "categoria": "Postres y yogurts",
+   "precio": 6.0,
+   "ingredientes": "Galleta grande de harina, mantequilla, huevo y chispas de chocolate",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo"
+   ],
+   "puede_contener": [
+    "frutos-secos",
+    "soya"
+   ],
+   "visual": "galleta grande con chispas"
+  },
+  {
+   "id": "cinnamon-roll",
+   "nombre": "Cinnamon Roll Canela",
+   "categoria": "Postres y yogurts",
+   "precio": 7.0,
+   "ingredientes": "Masa, canela, mantequilla y glaseado",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "huevo"
+   ],
+   "puede_contener": [],
+   "visual": "rol de canela"
+  },
+  {
+   "id": "palitos-yuca-queso",
+   "nombre": "Palitos de Yuca con Queso (Nancy Natur)",
+   "categoria": "Snacks",
+   "precio": 5.0,
+   "ingredientes": "Bocaditos de almidón de yuca con queso parmesano",
+   "contiene": [
+    "lacteos"
+   ],
+   "puede_contener": [],
+   "visual": "bolsa con palitos blancos y etiqueta naranja Palitos de Yuca con Queso"
+  },
+  {
+   "id": "palitos-yuca-ajonjoli",
+   "nombre": "Palitos de Yuca con Ajonjolí (Nancy Natur)",
+   "categoria": "Snacks",
+   "precio": 5.0,
+   "ingredientes": "Bocaditos de almidón de yuca con ajonjolí. Sin gluten",
+   "contiene": [
+    "ajonjoli"
+   ],
+   "puede_contener": [
+    "lacteos"
+   ],
+   "visual": "bolsa con palitos y etiqueta verde Sin Gluten"
+  },
+  {
+   "id": "palitos-ajonjoli",
+   "nombre": "Palitos de Ajonjolí (Nancy Natur)",
+   "categoria": "Snacks",
+   "precio": 5.0,
+   "ingredientes": "Palitos horneados de harina con ajonjolí",
+   "contiene": [
+    "gluten",
+    "ajonjoli"
+   ],
+   "puede_contener": [
+    "lacteos",
+    "frutos-secos"
+   ],
+   "visual": "bolsa con palitos cubiertos de ajonjolí"
+  },
+  {
+   "id": "palitos-linaza",
+   "nombre": "Palitos de Linaza y Salvado (Nancy Natur)",
+   "categoria": "Snacks",
+   "precio": 5.0,
+   "ingredientes": "Palitos horneados de salvado de trigo y linaza",
+   "contiene": [
+    "gluten"
+   ],
+   "puede_contener": [
+    "ajonjoli",
+    "lacteos",
+    "frutos-secos"
+   ],
+   "visual": "bolsa con palitos con semillas"
+  },
+  {
+   "id": "galletas-salvado-linaza",
+   "nombre": "Galletas de Salvado con Linaza y Ajonjolí (Nancy Natur)",
+   "categoria": "Snacks",
+   "precio": 5.0,
+   "ingredientes": "Galletas de salvado de trigo, linaza y ajonjolí",
+   "contiene": [
+    "gluten",
+    "ajonjoli"
+   ],
+   "puede_contener": [
+    "lacteos",
+    "frutos-secos"
+   ],
+   "visual": "bolsa con galletas delgadas apiladas"
+  },
+  {
+   "id": "galletas-salvado-parmeso",
+   "nombre": "Galletas de Salvado con Parmeso (Nancy Natur)",
+   "categoria": "Snacks",
+   "precio": 5.0,
+   "ingredientes": "Galletas de salvado de trigo y queso parmesano",
+   "contiene": [
+    "gluten",
+    "lacteos"
+   ],
+   "puede_contener": [
+    "ajonjoli",
+    "frutos-secos"
+   ],
+   "visual": "bolsa con galletas delgadas apiladas"
+  },
+  {
+   "id": "cachitos-nuez",
+   "nombre": "Cachitos de Nuez (Nancy Natur)",
+   "categoria": "Snacks",
+   "precio": 5.0,
+   "ingredientes": "Galletas con nuez. Contiene gluten, leche, soya y castaña",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "soya",
+    "frutos-secos"
+   ],
+   "puede_contener": [],
+   "visual": "bolsa con galletas en forma de media luna"
+  },
+  {
+   "id": "cachitos-nuez-chocolate",
+   "nombre": "Cachitos de Nuez con Chocolate (Nancy Natur)",
+   "categoria": "Snacks",
+   "precio": 5.0,
+   "ingredientes": "Galletas con nuez bañadas en chocolate",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "soya",
+    "frutos-secos"
+   ],
+   "puede_contener": [],
+   "visual": "bolsa con galletas media luna bañadas en chocolate"
+  },
+  {
+   "id": "mix-frutas-secas-nancy",
+   "nombre": "Mix de Frutas Secas (Nancy Natur)",
+   "categoria": "Snacks",
+   "precio": 4.5,
+   "ingredientes": "Mezcla de frutos secos y pasas",
+   "contiene": [
+    "frutos-secos"
+   ],
+   "puede_contener": [
+    "mani",
+    "sulfitos"
+   ],
+   "visual": "bolsa con nueces, almendras y pasas, etiqueta amarilla"
+  },
+  {
+   "id": "avena-instantanea",
+   "nombre": "Avena Instantánea Perfect Oatmeal",
+   "categoria": "Snacks",
+   "precio": 10.0,
+   "ingredientes": "Hojuelas de avena, leche, pasas y castañas. Contiene gluten y castaña",
+   "contiene": [
+    "gluten",
+    "lacteos",
+    "frutos-secos"
+   ],
+   "puede_contener": [
+    "soya",
+    "mani",
+    "ajonjoli"
+   ],
+   "visual": "bolsa con avena, pasas y castañas"
+  },
+  {
+   "id": "sufrut-blend",
+   "nombre": "Sufrut Fruta Deshidratada Blend (mango y arándano)",
+   "categoria": "Snacks",
+   "precio": 9.0,
+   "ingredientes": "Mango y arándano deshidratados. Libre de gluten, sin azúcar",
+   "contiene": [],
+   "puede_contener": [],
+   "visual": "bolsa negra Sufrut con mango y arándanos"
+  },
+  {
+   "id": "sufrut-mix",
+   "nombre": "Sufrut Fruta Deshidratada Mix",
+   "categoria": "Snacks",
+   "precio": 8.0,
+   "ingredientes": "Mango, piña y coco deshidratados",
+   "contiene": [],
+   "puede_contener": [],
+   "visual": "bolsa negra Sufrut con coco y piña"
+  },
+  {
+   "id": "pituquita-mix",
+   "nombre": "Pituquita Chips Mix",
+   "categoria": "Snacks",
+   "precio": 5.0,
+   "ingredientes": "Pituca morada, papa nativa, sal de maras y aceite de girasol. Vegano, sin gluten",
+   "contiene": [],
+   "puede_contener": [],
+   "visual": "bolsa kraft con etiqueta morada Pituquita Chips Mix"
+  },
+  {
+   "id": "pituquita-original",
+   "nombre": "Pituquita Chips Original",
+   "categoria": "Snacks",
+   "precio": 5.0,
+   "ingredientes": "Pituca morada, sal de maras y aceite de girasol. Vegano, sin gluten",
+   "contiene": [],
+   "puede_contener": [],
+   "visual": "bolsa kraft con etiqueta guinda Pituquita Chips Original"
+  },
+  {
+   "id": "jugo-naranja",
+   "nombre": "Jugo de Naranja",
+   "categoria": "Bebidas",
+   "precio": 8.0,
+   "ingredientes": "Naranja",
+   "contiene": [],
+   "puede_contener": [],
+   "visual": "vaso con jugo naranja y dibujos de personas"
+  },
+  {
+   "id": "jugo-fruta",
+   "nombre": "Jugo (fresa, papaya, piña o mixto)",
+   "categoria": "Bebidas",
+   "precio": 8.0,
+   "ingredientes": "Fruta y agua",
+   "contiene": [],
+   "puede_contener": [
+    "lacteos"
+   ],
+   "visual": "vaso con jugo de fruta"
+  },
+  {
+   "id": "refresco",
+   "nombre": "Refresco (maracuyá o chicha morada)",
+   "categoria": "Bebidas",
+   "precio": 4.5,
+   "ingredientes": "Maracuyá o maíz morado, agua y azúcar",
+   "contiene": [],
+   "puede_contener": [],
+   "visual": "dispensador de refresco morado o amarillo"
+  },
+  {
+   "id": "limonada",
+   "nombre": "Limonada (fresa, frutos rojos, frambuesa o mango)",
+   "categoria": "Bebidas",
+   "precio": 10.0,
+   "ingredientes": "Limón, fruta, agua y azúcar",
+   "contiene": [],
+   "puede_contener": [],
+   "visual": "vaso con limonada"
+  },
+  {
+   "id": "frosty",
+   "nombre": "Frosty (capuccino, moka, vainilla, chocolate, fresa o caramelo)",
+   "categoria": "Bebidas",
+   "precio": 10.0,
+   "ingredientes": "Leche, helado, hielo y saborizante",
+   "contiene": [
+    "lacteos"
+   ],
+   "puede_contener": [
+    "soya"
+   ],
+   "visual": "vaso con bebida helada cremosa"
+  },
+  {
+   "id": "frosty-oreo",
+   "nombre": "Frosty Oreo",
+   "categoria": "Bebidas",
+   "precio": 11.0,
+   "ingredientes": "Leche, helado y galleta Oreo",
+   "contiene": [
+    "lacteos",
+    "gluten",
+    "soya"
+   ],
+   "puede_contener": [],
+   "visual": "vaso con bebida helada con galleta"
+  },
+  {
+   "id": "orange-coffee",
+   "nombre": "Orange Coffee",
+   "categoria": "Bebidas",
+   "precio": 11.0,
+   "ingredientes": "Café, jugo de naranja y hielo en cubos",
+   "contiene": [],
+   "puede_contener": [],
+   "visual": "vaso con café arriba y jugo naranja abajo"
+  },
+  {
+   "id": "espresso",
+   "nombre": "Espresso / Ristretto / Americano",
+   "categoria": "Bebidas",
+   "precio": 6.0,
+   "ingredientes": "Café",
+   "contiene": [],
+   "puede_contener": [
+    "lacteos"
+   ],
+   "visual": "taza pequeña de café"
+  },
+  {
+   "id": "cafe-con-leche",
+   "nombre": "Capuccino / Latte / Macchiato / Mokaccino",
+   "categoria": "Bebidas",
+   "precio": 8.0,
+   "ingredientes": "Café y leche",
+   "contiene": [
+    "lacteos"
+   ],
+   "puede_contener": [
+    "soya"
+   ],
+   "visual": "vaso de café con leche"
+  },
+  {
+   "id": "chocolate-caliente",
+   "nombre": "Chocolate caliente",
+   "categoria": "Bebidas",
+   "precio": 8.0,
+   "ingredientes": "Chocolate y leche",
+   "contiene": [
+    "lacteos"
+   ],
+   "puede_contener": [
+    "soya"
+   ],
+   "visual": "vaso de chocolate"
+  },
+  {
+   "id": "infusion",
+   "nombre": "Infusión (manzanilla, té, anís)",
+   "categoria": "Bebidas",
+   "precio": 5.0,
+   "ingredientes": "Hierbas y agua",
+   "contiene": [],
+   "puede_contener": [],
+   "visual": "taza de infusión"
+  }
+ ]
+}

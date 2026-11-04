@@ -376,10 +376,11 @@ Responde SOLO con un objeto JSON, sin texto adicional:
 async function dataURLtoBlob(u){const [m,b]=u.split(',');const mime=(m.match(/data:(.*?);/)||[,'image/jpeg'])[1];const bin=atob(b);const arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);return new Blob([arr],{type:mime})}
 function toProduct(j,via){
   if(!j||j.reconocido===false)return {unknown:true,ai:true,via,name:'No reconocido'};
+  if(Array.isArray(j.productos)&&j.productos.length>1)return {multi:true,ai:true,via,name:'Vitrina',items:j.productos.map(x=>Object.assign(toProduct(Object.assign({},x,{confianza:j.confianza}),via)))};
   const SYN={leche:'lacteos',lactosa:'lacteos',lacteo:'lacteos',caseina:'lacteos',trigo:'gluten',cebada:'gluten',centeno:'gluten',avena:'gluten',huevos:'huevo',cacahuate:'mani',cacahuete:'mani',nueces:'frutos-secos','frutos secos':'frutos-secos',soja:'soya',sesamo:'ajonjoli',crustaceos:'mariscos',sulfito:'sulfitos'};
   const clean=a=>Array.isArray(a)?[...new Set(a.map(x=>{const k=String(x).toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'');return SYN[k]||k}).filter(x=>KEYS.includes(x)))]:[];
   const c=clean(j.contiene);
-  return {ai:true,via,name:String(j.nombre||'Producto sin nombre'),brand:String(j.marca||''),contains:c,may:clean(j.puede_contener).filter(x=>!c.includes(x)),others:Array.isArray(j.otros)?j.otros.map(String):[],ing:String(j.ingredientes||''),conf:String(j.confianza||'')};
+  return {ai:true,via,name:String(j.nombre||'Producto sin nombre'),brand:String(j.marca||''),contains:c,may:clean(j.puede_contener).filter(x=>!c.includes(x)),others:Array.isArray(j.otros)?j.otros.map(String):[],ing:String(j.ingredientes||''),conf:j.fuente==='cafeteria'?'alta':String(j.confianza||''),fuente:String(j.fuente||''),price:typeof j.precio==='number'?j.precio:null};
 }
 async function viaBackend(url){
   const [meta,b64]=url.split(',');const mime=(meta.match(/data:(.*?);/)||[,'image/jpeg'])[1];
@@ -414,12 +415,30 @@ function analyze(url){
   const tok=++scanTok;
   recognize(url).then(p=>{setTimeout(()=>{if(tok!==scanTok||view!=='camara'||!a.isConnected)return;a.remove();showResult(p)},Math.max(0,1000-(Date.now()-t0)))});
 }
+let vitrina=null;
 function showResult(p){
+  if(p.multi){vitrina=p;showVitrina();return}
   const s=p;const k=S.snack;result=verdict(p);
   const entry={id:Date.now(),k,name:s.unknown?'No reconocido':s.name,v:result.v,time:dateNow(),photo:null,big:null,p:s,r:result};
   S.history.unshift(entry);S.history=S.history.slice(0,30);save();
   shrink(photoURL,72,true).then(t=>{entry.photo=t;return shrink(photoURL,520,false)}).then(b=>{entry.big=b;try{save()}catch(e){entry.big=null;save()}});
   $('#cam').appendChild(buildSheet(s,result,false));
+}
+const VORD={'No apto':2,'Trazas':1,'Apto':0};
+function showVitrina(){
+  const cam=$('#cam');cam.querySelectorAll('.sheet').forEach(n=>n.remove());$('#veil').classList.add('show');
+  const its=vitrina.items.map(p=>[p,verdict(p)]).sort((a,b)=>VORD[a[1].v]-VORD[b[1].v]);
+  const n={Apto:0,Trazas:0,'No apto':0};its.forEach(([,r])=>n[r.v]++);
+  const tag={'Apto':['Apto','var(--grn-t)','var(--grn-b)'],'Trazas':['Trazas','var(--amb-t)','var(--amb-b)'],'No apto':['No apto','var(--red-t)','var(--red-b)']};
+  const sh=document.createElement('div');sh.className='sheet res';
+  sh.innerHTML=`<div class="grab"><i></i></div><div class="body">
+   <div class="hd"><h2 class="h-sheet">Encontramos ${its.length} productos</h2><div class="t-detail">${n.Apto} aptos · ${n.Trazas} con trazas · ${n['No apto']} no aptos para ti</div></div>
+   <div class="list" style="gap:0">${its.map(([p,r],i)=>`<button class="arow vit" data-vi="${vitrina.items.indexOf(p)}" style="width:100%;text-align:left;gap:12px">${face(r.v,36)}<span class="grow"><span style="display:block;font-size:15px;font-weight:700">${esc(p.name)}</span><span class="t-cap">${p.price!=null?'S/ '+p.price.toFixed(2):esc(p.brand||'')}</span></span><span style="font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;color:${tag[r.v][1]};background:${tag[r.v][2]}">${tag[r.v][0]}</span></button>`).join('')}</div>
+   <div class="row t-cap" style="gap:6px">${I.spark('#5e574e')} Toca un producto para ver su detalle</div>
+  </div><div class="foot"><button class="btn btn-p" data-act="again">Escanear otra cosa</button><button class="btn btn-s" data-go="inicio">Volver al inicio</button></div>`;
+  cam.appendChild(sh);bind(sh);dragResult(sh,false);
+  sh.querySelectorAll('[data-vi]').forEach(b=>b.onclick=()=>{const p=vitrina.items[+b.dataset.vi];p.fromVit=true;sh.remove();showResult(p)});
+  requestAnimationFrame(()=>requestAnimationFrame(()=>sh.classList.add('show')));
 }
 function buildSheet(s,r,fromHist){
   const v=r.v;
@@ -430,7 +449,7 @@ function buildSheet(s,r,fromHist){
   if(v==='No apto')reason=`Contiene ${listJoin(hit)}, que marcaste en tu perfil.`;
   else if(v==='Trazas')reason=`No lo lleva como ingrediente, pero puede tener trazas de ${listJoin(r.may.map(a=>LABEL[a].toLowerCase()))}. ${INFO}`;
   else if(v==='Apto'){const tr=(s.may||[]).filter(a=>S.allergies.includes(a));reason=tr.length?`No lo lleva como ingrediente, pero puede tener trazas de ${listJoin(tr.map(a=>LABEL[a].toLowerCase()))}. Te lo marcamos apto porque no activaste los avisos de trazas. ${INFO}`:(S.allergies.length||S.customs.some(c=>c.on))?'No encontramos ninguna de tus alergias en su ficha.':'No marcaste alergias en tu perfil. Revisa la ficha antes de comer.'}
-  else reason=s.failed?'No pudimos analizar la foto en este momento. Intenta otra vez.':'La foto salió borrosa o no logramos identificar el producto.';
+  else reason=s.failed?'No pudimos analizar la foto en este momento. Intenta otra vez.':'No logramos identificar el producto. Si es de la cafetería, pregunta en caja por sus ingredientes.';
   let rows='';
   if(!s.unknown){const all=[...s.contains.map(a=>[LABEL[a],'Contiene',S.allergies.includes(a)]),...s.may.map(a=>[LABEL[a],'Puede contener',S.allergies.includes(a)]),...r.custom.map(c=>[cap(c),'Contiene',true])];
    const sty={'Contiene':['var(--red-b)',I.x('#b42318',9),'var(--red-t)'],'Puede contener':['var(--amb-b)',I.warn('#a15c00'),'var(--amb-t)']};
@@ -438,13 +457,13 @@ function buildSheet(s,r,fromHist){
   $('#veil').classList.add('show');
   const sh=document.createElement('div');sh.className='sheet res';
   sh.innerHTML=`<div class="grab"><i></i></div><div class="body">
-    <div class="row hd" style="gap:16px">${face(v)}<div class="grow"><h2 class="h-sheet" style="color:${col[0]}">${title}</h2><div class="t-detail">${s.unknown?'No hay coincidencias':esc(s.name)+(s.brand?' · '+esc(s.brand):'')}</div></div></div>
+    <div class="row hd" style="gap:16px">${face(v)}<div class="grow"><h2 class="h-sheet" style="color:${col[0]}">${title}</h2><div class="t-detail">${s.unknown?'No hay coincidencias':esc(s.name)+(s.brand?' · '+esc(s.brand):'')+(s.price!=null?' · S/ '+Number(s.price).toFixed(2):'')}</div></div></div>
     <div class="reason" style="background:${col[1]};color:${col[0]}">${reason}</div>
     ${s.unknown?`<div><p class="overline">Para la próxima foto</p><div class="t-body" style="color:var(--tx)">• Acércate y evita los reflejos del vidrio<br>• Que se vea el nombre del empaque</div></div>`:
     `<div><p class="overline">Alérgenos de este snack</p><div>${rows}</div></div>
      <details><summary class="link">Ver ingredientes</summary><p class="t-detail" style="margin:4px 0 0">${esc(s.ing||"Sin detalle de ingredientes.")}</p></details>
-     <div class="row t-cap" style="gap:6px">${I.spark('#5e574e')} ${s.ai?(s.via==='gemini'?'Identificado a partir de tu foto':'Identificado por Claude a partir de tu foto'):'Modo demo · producto elegido por el entrevistador'}</div>${s.ai&&s.conf&&s.conf!=='alta'?'<div class="hint">'+I.warn('#a15c00')+' Confianza '+esc(s.conf)+': confirma con la etiqueta del empaque.</div>':''}`}
-  </div><div class="foot">${fromHist?'<button class="btn btn-p" data-act="again">Escanear otro snack</button><button class="btn btn-s" data-act="back-hist">Volver</button>':s.unknown?'<button class="btn btn-p" data-act="again">Tomar otra foto</button><button class="btn btn-s" data-act="gallery">Elegir de la galería</button>':'<button class="btn btn-p" data-act="again">Escanear otro snack</button><button class="btn btn-s" data-go="inicio">Volver al inicio</button>'}</div>`;
+     <div class="row t-cap" style="gap:6px">${I.spark('#5e574e')} ${s.fuente==='cafeteria'?'Ficha de la cafetería':'Identificado a partir de tu foto'}</div>${s.ai&&s.conf&&s.conf!=='alta'?'<div class="hint">'+I.warn('#a15c00')+' Confianza '+esc(s.conf)+': confirma con la etiqueta del empaque.</div>':''}`}
+  </div><div class="foot">${fromHist?'<button class="btn btn-p" data-act="again">Escanear otro snack</button><button class="btn btn-s" data-act="back-hist">Volver</button>':s.unknown?'<button class="btn btn-p" data-act="again">Tomar otra foto</button><button class="btn btn-s" data-act="gallery">Elegir de la galería</button>':s.fromVit&&vitrina?'<button class="btn btn-p" data-act="back-vit">Ver los otros productos</button><button class="btn btn-s" data-go="inicio">Volver al inicio</button>':'<button class="btn btn-p" data-act="again">Escanear otro snack</button><button class="btn btn-s" data-go="inicio">Volver al inicio</button>'}</div>`;
   bind(sh);dragResult(sh,fromHist);requestAnimationFrame(()=>requestAnimationFrame(()=>sh.classList.add('show')));
   return sh;
 }
@@ -574,7 +593,8 @@ function bind(root){
     if(a==='torch')toggleTorch(b);
     if(a==='gallery')$('#fileGal').click();
     if(a==='native-cam')$('#fileCam').click();
-    if(a==='again'){view='camara';renderCam()}
+    if(a==='again'){vitrina=null;view='camara';renderCam()}
+    if(a==='back-vit'){showVitrina()}
     if(a==='close-mod')closeMod();
     if(a==='back-hist')go(histFrom);
     if(a==='ai-mode'){if(!sampleFn&&!backendOn()){toast('La IA no está disponible en esta vista');return}S.ai=!S.ai;save();b.querySelector('.switch').classList.toggle('on',S.ai)}
