@@ -154,8 +154,8 @@ button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 .tip span{font-size:13px;line-height:18px;color:var(--tx2)}
 
 /* ---------- aviso inactividad ---------- */
-.idle{position:absolute;left:var(--s-md);right:var(--s-md);bottom:calc(150px + env(safe-area-inset-bottom));z-index:20;display:flex;align-items:center;gap:var(--s-sm);padding:var(--s-sm) var(--s-md);border-radius:var(--r-md);background:var(--tx);color:var(--inv);box-shadow:0 10px 30px rgba(0,0,0,.3);transform:translateY(20px);opacity:0;pointer-events:none;transition:transform .3s var(--out),opacity .3s var(--out)}
-.idle.show{transform:none;opacity:1;pointer-events:auto}
+.idle{position:absolute;left:var(--s-md);right:var(--s-md);bottom:calc(150px + env(safe-area-inset-bottom));z-index:20;display:flex;align-items:center;gap:var(--s-sm);padding:var(--s-sm) var(--s-md);border-radius:var(--r-md);background:var(--tx);color:var(--inv);box-shadow:0 10px 30px rgba(0,0,0,.3);transform:translateY(20px);opacity:0;visibility:hidden;pointer-events:none;transition:transform .3s var(--out),opacity .3s var(--out),visibility 0s .3s}
+.idle.show{transform:none;opacity:1;visibility:visible;pointer-events:auto;transition:transform .3s var(--out),opacity .3s var(--out)}
 .idle p{flex:1;margin:0;font-size:13px;line-height:18px}
 .idle b{font-size:15px}
 .idle button{flex:none;min-height:40px;padding:0 14px;border-radius:10px;background:var(--sup);color:var(--tx);font-size:13px;font-weight:700}
@@ -231,7 +231,7 @@ const P=[
 const byId=Object.fromEntries(P.map(p=>[p.id,p]));
 
 /* ---------------- Estado ---------------- */
-const S={screen:'rest',F:new Set(),prod:null,prevF:''};
+const S={screen:'rest',F:new Set(),prod:null,prevF:'',asked:new Set()};
 const IDLE=30;let left=IDLE,tick=null;
 const $=s=>document.querySelector(s);
 const phone=$('#phone');
@@ -366,19 +366,19 @@ function ficha(id){
     const show=F.length?F:['lacteos','gluten','huevo','mani','frutos-secos'];
     rows=show.map(a=>`<div class="ar ${S.F.has(a)?'mine':''}"><span class="nmx">${ic(a,18)}${AN[a]}${S.F.has(a)?'<span class="evit">evitas</span>':''}</span><span class="res r-nd">Sin datos</span></div>`).join('');
     extra=`<div class="ing"><h4>Mientras tanto</h4><p>Revisa la etiqueta del empaque o pregunta en la cafetería del 5.° piso antes de comerlo.</p></div>`;
-    foot=`<button class="btn btn-p" id="opts">${I.grid()}${F.length?'Ver opciones aptas para ti':'Ver otros productos'}</button><button class="btn btn-s" id="ask">${I.flag}Pedir que registren esta ficha</button>`;
+    foot=`<button class="btn btn-p" id="opts">${I.grid()}${F.length?'Ver opciones aptas para ti':'Ver otros productos'}</button>${S.asked.has(p.id)?`<button class="btn btn-s" disabled style="opacity:.6">${I.check('#1b1916',14)}Ya avisamos a la cafetería</button>`:`<button class="btn btn-s" id="ask">${I.flag}Pedir que registren esta ficha</button>`}`;
   }else{
     if(v.k==='ok'){const p2=p.m.length?` Puede tener trazas de ${listY(p.m)}.`:'';vb=['ok','Apto para ti',`No contiene ${list(F)}.${p2}`]}
-    else if(v.k==='tr')vb=['tr','Úsalo con precaución',`Puede contener trazas de ${listY(v.tr)}. Si tu alergia es severa, mejor elige otro.`];
+    else if(v.k==='tr')vb=['tr','Consúmelo con precaución',`Puede contener trazas de ${listY(v.tr)}. Si tu alergia es severa, mejor elige otro.`];
     else if(v.k==='no')vb=['no','No es apto para ti',`Contiene ${listY(v.hit)}.`];
-    else vb=['ne','¿Es apto para ti?','Vuelve y marca abajo los alérgenos que evitas: te lo diremos al instante.'];
+    else vb=['ne','¿Es apto para ti?','Marca los alérgenos que evitas y te diremos al instante si puedes comerlo.'];
     const st=a=>p.c.includes(a)?`<span class="res r-no">${I.x('#8a1c12',10)}Contiene</span>`:p.m.includes(a)?`<span class="res r-tr">${I.warn('#6e3f00',13)}Puede contener</span>`:`<span class="res r-ok">${I.check('#135532',13)}No contiene</span>`;
     const order=[...F,...p.c.filter(a=>!S.F.has(a)),...p.m.filter(a=>!S.F.has(a)&&!p.c.includes(a))];
     rows=order.map(a=>`<div class="ar ${S.F.has(a)?'mine':''}"><span class="nmx">${ic(a,18)}${AN[a]}${S.F.has(a)?'<span class="evit">evitas</span>':''}</span>${st(a)}</div>`).join('');
     const restN=ALG.length-order.length;
     rows+=`<div class="rest-note">${order.length?`No contiene ninguno de los otros ${restN} alérgenos.`:'No contiene ninguno de los 14 alérgenos principales.'}</div>`;
     extra=`<div class="ing"><h4>Ingredientes</h4><p>${p.ing}</p><div class="ver2">${I.shield('#1c7a47',13)}Verificada por la cafetería · actualizada hoy, 7:30 a. m.</div></div>`;
-    foot=`<button class="btn btn-p" id="opts">${I.grid()}${v.k==='no'?'Ver opciones aptas para ti':'Ver otros productos'}</button>`;
+    foot=v.k==='ne'?`<button class="btn btn-p" id="mark">${I.grid()}Marcar lo que evito</button>`:`<button class="btn btn-p" id="opts">${I.grid()}${v.k==='no'?'Ver opciones aptas para ti':'Ver otros productos'}</button>`;
   }
   phone.innerHTML=`<div class="view">
    <div class="f-top"><button class="back" id="back">${I.back}Volver</button><span class="timer">Vuelve al inicio en <b class="num" id="timerN">${left}</b> s</span></div>
@@ -395,12 +395,13 @@ function ficha(id){
   $('#back').onclick=()=>catalog();
   $('#stay').onclick=resetIdle;
   const o=$('#opts');if(o)o.onclick=()=>catalog();
+  const m=$('#mark');if(m)m.onclick=()=>{catalog();$('.fb')?.focus({preventScroll:true})};
   const a=$('#ask');if(a)a.onclick=()=>sent(p);
   resetIdle();
 }
 
 function sent(p){
-  S.screen='sent';
+  S.screen='sent';S.asked.add(p.id);
   phone.innerHTML=`<div class="view">
    <div class="f-top"><button class="back" id="back">${I.back}Volver</button><span class="timer">Vuelve al inicio en <b class="num" id="timerN">${left}</b> s</span></div>
    <div class="done">
@@ -409,7 +410,7 @@ function sent(p){
      <p>El personal registrará los alérgenos del ${p.name} hoy mismo.</p>
      <div class="tip">${I.q('#a15c00',20)}<div><b>Antes de consumirlo</b><span>Revisa la etiqueta del empaque o pregunta en la cafetería del 5.° piso.</span></div></div>
    </div>
-   <div class="f-foot"><button class="btn btn-p" id="opts">${I.grid()}Ver opciones aptas para ti</button><button class="btn btn-s" id="home">Volver al inicio</button></div>
+   <div class="f-foot"><button class="btn btn-p" id="opts">${I.grid()}${S.F.size?'Ver opciones aptas para ti':'Ver otros productos'}</button><button class="btn btn-s" id="home">Volver al inicio</button></div>
    <div class="idle low" role="status"><p>¿Sigues ahí? Volvemos al inicio en <b class="num">10 s</b></p><button id="stay">Seguir aquí</button></div>
   </div>`;
   $('#back').onclick=()=>ficha(p.id);
@@ -420,7 +421,7 @@ function sent(p){
 }
 
 /* Al volver al inicio se borra todo: la pantalla es compartida */
-function goRest(){S.F.clear();S.prod=null;S.catScroll=0;rest()}
+function goRest(){S.F.clear();S.asked.clear();S.prod=null;S.catScroll=0;rest()}
 
 rest();
 </script>
