@@ -139,6 +139,11 @@ details summary::-webkit-details-marker{display:none}
 .opt .mk{width:24px;height:24px;border-radius:50%;margin-left:auto;display:grid;place-items:center;background:var(--brand);transform:scale(0);transition:transform .25s var(--ease)}
 .opt.on .mk{transform:scale(1)}
 .opt.addnew{background:var(--brand-s);border-color:var(--brand);color:var(--brand)}
+.info-i{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;font:700 12px/1 Georgia,serif;font-style:italic;vertical-align:middle;margin-left:2px;opacity:.8;cursor:pointer;flex:none;align-self:center}
+.chips .info-i{width:30px;height:30px;margin-left:-2px;color:var(--tx2)}
+.ibd{position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:20;display:grid;place-items:center;padding:24px;opacity:0;transition:opacity .25s}.ibd.show{opacity:1}
+.ibox{background:var(--sup);color:var(--tx);border-radius:var(--r-lg);padding:20px;max-width:330px;display:flex;flex-direction:column;gap:10px;transform:scale(.95);transition:transform .25s var(--ease)}.ibd.show .ibox{transform:none}
+.ibox h3{margin:0;font-size:18px}.ibox p{margin:0;font-size:14px;line-height:20px;color:var(--tx2)}
 .hint{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--amb-t)}
 .hint.err{color:var(--red-t)}
 .list{display:flex;flex-direction:column;gap:var(--s-xs)}
@@ -256,7 +261,7 @@ function perfil(){
     ${customs.map(c=>`<button class="chip on" data-custom="${esc(c.text)}" aria-label="Quitar ${esc(c.text)}"><span class="ck">${I.check()}</span>${esc(c.text)}</button>`).join('')}
     <button class="chip add" data-act="open-search">+ Otra alergia</button>
    </div></div>
-   <button class="card row" data-act="traces" style="text-align:left;width:100%"><div class="grow"><div style="font-size:14px;font-weight:700">Avisarme también de trazas</div><div class="t-cap" style="margin-top:2px">“Puede contener” contará como riesgo</div></div><span class="switch ${S.traces?'on':''}"></span></button>
+   <button class="card row" data-act="traces" style="text-align:left;width:100%"><div class="grow"><div style="font-size:14px;font-weight:700">Avisarme también de trazas</div><div class="t-cap" style="margin-top:2px">“Puede contener” contará como riesgo ${INFO}</div></div><span class="switch ${S.traces?'on':''}"></span></button>
   </div></div>
   <div class="footer"><div class="t-detail" style="text-align:center">${S.onboarded?'Tus cambios se guardan al tocar el botón.':'Puedes cambiarlo cuando quieras desde Perfil.'}</div><button class="btn btn-p" data-act="save">${S.onboarded?'Guardar cambios':'Guardar mis alergias'}</button></div>
   ${S.onboarded?tabbar('perfil'):''}`;
@@ -280,11 +285,11 @@ function inicio(){
 function itemHTML(h){if(!h.id)h.id=h.time+h.name;const cls={'Apto':'b-apto','No apto':'b-noapto','Trazas':'b-trazas','No reconocido':'b-none'}[h.v];const lab=h.v==='No reconocido'?'Sin resultado':h.v;
   return `<div class="item fade-in" data-hist="${esc(String(h.id))}" role="button">${h.photo?`<img class="thumb" src="${h.photo}" alt="">`:`<span class="thumb">${snackArt(h.k,30)}</span>`}<div class="grow"><div class="ellipsis" style="font-size:14px;font-weight:700">${esc(h.name)}</div><div class="t-cap">${h.time}</div></div><span class="badge ${cls}">${lab}</span></div>`}
 function historial(){
-  const F={todos:()=>true,apto:h=>h.v==='Apto',noapto:h=>h.v==='No apto',trazas:h=>h.v==='Trazas'};
+  const F={todos:()=>true,apto:h=>h.v==='Apto',noapto:h=>h.v==='No apto',trazas:h=>h.v==='Trazas',none:h=>h.v==='No reconocido'};
   const list=S.history.filter(F[histFilter]);
   return `<div class="scroll"><div class="stack">
    <div><h1 class="h-display">Historial</h1><p class="t-body">Snacks que revisaste con la cámara</p></div>
-   <div class="chips" style="gap:6px">${[['todos','Todos'],['apto','Aptos'],['noapto','No aptos'],['trazas','Con trazas']].map(([k,l])=>`<button class="tag ${histFilter===k?'':'ghost'}" style="${histFilter===k?'background:var(--tx);color:#fff;':''}padding:8px 12px;min-height:36px" data-filter="${k}">${l}</button>`).join('')}</div>
+   <div class="chips" style="gap:6px">${[['todos','Todos'],['apto','Aptos'],['noapto','No aptos'],['trazas','Trazas'],['none','Sin resultado']].map(([k,l])=>`<button class="tag ${histFilter===k?'':'ghost'}" style="${histFilter===k?'background:var(--tx);color:#fff;':''}padding:8px 12px;min-height:36px" data-filter="${k}">${l}</button>${k==='trazas'?INFO:''}`).join('')}</div>
    ${list.length?`<div class="list">${list.map(itemHTML).join('')}</div>`:`<div class="empty">${S.history.length?'No hay snacks con este filtro.':'Aquí aparecerán los snacks que escanees.'}</div>`}
   </div></div>${tabbar('historial')}`;
 }
@@ -388,7 +393,7 @@ function buildSheet(s,r,fromHist){
   const hit=[...r.contains.map(a=>LABEL[a].toLowerCase()),...r.custom.map(c=>c.toLowerCase())];
   let reason;
   if(v==='No apto')reason=`Contiene ${listJoin(hit)}, que marcaste en tu perfil.`;
-  else if(v==='Trazas')reason=`No lo lleva como ingrediente, pero puede tener trazas de ${listJoin(r.may.map(a=>LABEL[a].toLowerCase()))}.`;
+  else if(v==='Trazas')reason=`No lo lleva como ingrediente, pero puede tener trazas de ${listJoin(r.may.map(a=>LABEL[a].toLowerCase()))}. ${INFO}`;
   else if(v==='Apto')reason=(S.allergies.length||S.customs.some(c=>c.on))?'No encontramos ninguna de tus alergias en su ficha.':'No marcaste alergias en tu perfil. Revisa la ficha antes de comer.';
   else reason=s.failed?'No pudimos analizar la foto en este momento. Intenta otra vez.':'La foto salió borrosa o no logramos identificar el producto.';
   let rows='';
@@ -427,6 +432,12 @@ function dragResult(sh,fromHist){
     g.addEventListener('pointerup',end);g.addEventListener('pointercancel',end);
   });
 }
+const INFO='<span class="info-i" data-info="trazas" role="button" aria-label="¿Qué son las trazas?">i</span>';
+function showInfo(){if($('.ibd'))return;const bd=document.createElement('div');bd.className='ibd';
+  bd.innerHTML=`<div class="ibox"><h3>¿Qué son las trazas?</h3><p>Son cantidades muy pequeñas de un alérgeno que pueden llegar al producto aunque no sea un ingrediente, por ejemplo porque se fabrica en la misma planta o máquinas que otros productos que sí lo tienen.</p><p>En el empaque aparece como <b>“Puede contener…”</b>. Si tu alergia es severa, es mejor evitarlo.</p><button class="btn btn-p" style="margin-top:6px">Entendido</button></div>`;
+  phone.appendChild(bd);requestAnimationFrame(()=>bd.classList.add('show'));
+  const close=()=>{bd.classList.remove('show');setTimeout(()=>bd.remove(),250)};bd.onclick=e=>{if(e.target===bd||e.target.tagName==='BUTTON')close()}}
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-info]');if(t){e.stopPropagation();e.preventDefault();showInfo()}},true);
 let histFrom='inicio';
 function openHist(id){
   const h=S.history.find(x=>String(x.id)===String(id));if(!h)return;
