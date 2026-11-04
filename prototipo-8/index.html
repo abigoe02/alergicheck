@@ -67,9 +67,11 @@ button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 .art{display:grid;place-items:center;height:48px;margin:4px 0 4px;transition:filter .35s var(--out) calc(var(--i)*28ms),opacity .35s var(--out) calc(var(--i)*28ms)}
 .nm{font-size:13px;line-height:16px;font-weight:600;min-height:32px;text-decoration:line-through;text-decoration-color:transparent;text-decoration-thickness:1.5px;transition:color .35s var(--out) calc(var(--i)*28ms),text-decoration-color .35s var(--out) calc(var(--i)*28ms)}
 .st{margin-top:auto;padding-top:6px;min-height:28px;display:flex;align-items:flex-end}
-.dots{display:flex;gap:4px;align-items:center}
-.dot{width:22px;height:22px;border-radius:50%;background:var(--sutil);display:grid;place-items:center;color:var(--tx)}
-.tr{font-size:11px;font-weight:600;color:var(--tx2)}
+.dots{display:flex;flex-wrap:wrap;gap:4px 3px;align-items:center}
+.dot{width:20px;height:20px;border-radius:50%;background:var(--sutil);display:grid;place-items:center;color:var(--tx)}
+.dot.more{font-size:10.5px;font-weight:700}
+.tr:first-child{margin-left:0}
+.tr{font-size:11px;font-weight:600;color:var(--tx2);white-space:nowrap;margin-left:2px}
 .none{font-size:11.5px;color:var(--tx2)}
 .pend{font-size:11.5px;font-weight:700;color:var(--amb-t)}
 .pill{display:inline-flex;align-items:center;gap:4px;max-width:100%;padding:3px 8px;border-radius:var(--r-full);font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:pop .3s var(--out) calc(var(--i)*28ms) both}
@@ -267,7 +269,11 @@ function cardHTML(p,i){
   if(v.k==='ne'){
     if(p.pending)st=`<span class="pend">Ficha pendiente</span>`;
     else if(!p.c.length&&!p.m.length)st=`<span class="none">Sin alérgenos</span>`;
-    else st=`<span class="dots">${p.c.slice(0,3).map(a=>`<span class="dot" title="${AN[a]}">${ic(a,13)}</span>`).join('')}${p.m.length?`<span class="tr">+ trazas</span>`:''}</span>`;
+    else{
+      /* con trazas caben 2 círculos; si hay más alérgenos se resumen como "+N" */
+      const lim=p.m.length?2:3,max=p.c.length>lim?lim-1:lim,more=p.c.slice(max);
+      st=`<span class="dots">${p.c.slice(0,max).map(a=>`<span class="dot" title="${AN[a]}">${ic(a,13)}</span>`).join('')}${more.length?`<span class="dot more" title="${more.map(a=>AN[a]).join(', ')}">+${more.length}</span>`:''}${p.m.length?`<span class="tr">+ trazas</span>`:''}</span>`;
+    }
   }else if(v.k==='ok')st=`<span class="pill p-ok">${I.check('#135532',10)}Apto</span>`;
   else if(v.k==='tr')st=`<span class="pill p-tr" title="Trazas de ${listY(v.tr)}">${I.warn('#6e3f00',11)}Trazas</span>`;
   else if(v.k==='no'){let t=v.hit.length===1?AN[v.hit[0]]:AN[v.hit[0]]+' +'+(v.hit.length-1);if(t.length>12)t='No apto';st=`<span class="pill p-no" title="Contiene ${listY(v.hit)}">${I.x('#8a1c12',9)}${t}</span>`}
