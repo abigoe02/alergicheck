@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f4ef">
+<title>AlergiCheck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f4ef;--sup:#ffffff;--sutil:#efebe5;--cam:#191512;
+  --brand:#7a4a35;--brand-s:#f3e9e2;
+  --tx:#1b1916;--tx2:#5e574e;--ph:#6b6359;--inv:#ffffff;
+  --bd:#e5dfd6;--bd-f:#1b1916;--asa:#d6cfc5;
+  --red:#b42318;--red-t:#8a1c12;--red-b:#fcebe8;
+  --grn:#1c7a47;--grn-t:#135532;--grn-b:#e3f2e8;
+  --amb:#a15c00;--amb-t:#6e3f00;--amb-b:#fbefd8;
+  --neu:#5e574e;--neu-b:#efebe5;
+  --s-2xs:4px;--s-xs:8px;--s-sm:12px;--s-md:16px;--s-lg:20px;--s-xl:24px;--s-2xl:32px;
+  --r-sm:8px;--r-md:14px;--r-lg:24px;--r-xl:28px;--r-full:999px;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#2b2724;font-family:Inter,system-ui,-apple-system,sans-serif;color:var(--tx);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+input{font:inherit}
+#phone{position:relative;width:100%;max-width:430px;height:100dvh;margin:0 auto;background:var(--bg);overflow:hidden}
+@media (min-width:520px){#phone{height:min(852px,calc(100dvh - 32px));margin-top:16px;border-radius:32px;box-shadow:0 24px 64px rgba(0,0,0,.45)}}
+.view{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+.scroll{flex:1;overflow-y:auto;padding:calc(var(--s-lg) + env(safe-area-inset-top)) var(--s-lg) var(--s-xl)}
+.h-display{font-size:26px;line-height:32px;font-weight:700;margin:0}
+.h-screen{font-size:24px;line-height:30px;font-weight:700;margin:0}
+.h-sheet{font-size:20px;line-height:26px;font-weight:700;margin:0}
+.t-body{font-size:14px;line-height:20px;color:var(--tx2);margin:0}
+.t-detail{font-size:13px;line-height:18px;color:var(--tx2)}
+.t-cap{font-size:12px;line-height:16px;color:var(--tx2)}
+.overline{font-size:11px;line-height:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--tx2);margin:0 0 var(--s-xs)}
+.stack{display:flex;flex-direction:column;gap:var(--s-md)}
+.card{background:var(--sup);border:1px solid var(--bd);border-radius:var(--r-md);padding:var(--s-md)}
+.row{display:flex;align-items:center;gap:var(--s-sm)}
+.grow{flex:1;min-width:0}
+.link{font-size:13px;font-weight:700;color:var(--brand);min-height:32px;display:inline-flex;align-items:center}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;border-radius:var(--r-md);font-size:16px;font-weight:700;transition:transform .15s var(--ease),opacity .2s}
+.btn:active{transform:scale(.98)}
+.btn-p{background:var(--brand);color:var(--inv)}
+.btn-s{background:var(--sup);color:var(--tx);border:1.5px solid var(--bd-f)}
+.footer{padding:var(--s-sm) var(--s-lg) calc(var(--s-lg) + env(safe-area-inset-bottom));background:var(--bg);display:flex;flex-direction:column;gap:var(--s-xs)}
+/* buscador */
+.search{display:flex;align-items:center;gap:var(--s-xs);height:48px;padding:0 var(--s-md);background:var(--sup);border:1px solid var(--bd);border-radius:var(--r-md);color:var(--ph);font-size:14px;width:100%;text-align:left}
+.search svg{flex:none}
+.search input{border:0;outline:0;background:transparent;flex:1;min-width:0;font-size:16px;color:var(--tx)}
+.search input::placeholder{color:var(--ph)}
+.search.focus{border:2px solid var(--brand)}
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:var(--s-xs)}
+.chip{display:inline-flex;align-items:center;gap:0;min-height:44px;padding:0 var(--s-md);border-radius:var(--r-full);background:var(--sup);border:1.2px solid var(--bd);font-size:14px;font-weight:500;color:var(--tx);transition:background .25s var(--ease),color .25s var(--ease),border-color .25s var(--ease),gap .25s var(--ease)}
+.chip .ck{width:0;opacity:0;overflow:hidden;transition:width .25s var(--ease),opacity .2s;display:inline-flex}
+.chip.on{background:var(--brand);border-color:var(--brand);color:var(--inv);font-weight:700;gap:6px}
+.chip.on .ck{width:14px;opacity:1}
+.chip.add{border:1.2px dashed var(--brand);color:var(--brand)}
+.chip:active{transform:scale(.97)}
+/* interruptor */
+.switch{position:relative;width:48px;height:28px;border-radius:var(--r-full);background:var(--ph);flex:none;transition:background .25s var(--ease)}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .25s var(--ease)}
+.switch.on{background:var(--brand)}.switch.on::after{transform:translateX(20px)}
+/* etiquetas, insignias */
+.tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:var(--r-full);background:var(--brand-s);color:var(--brand);font-size:12px;font-weight:700}
+.tag.ghost{background:var(--sup);border:1px solid var(--bd);color:var(--tx2)}
+.badge{flex:none;padding:4px 10px;border-radius:var(--r-full);font-size:12px;font-weight:700}
+.b-apto{background:var(--grn-b);color:var(--grn-t)}.b-noapto{background:var(--red-b);color:var(--red-t)}.b-trazas{background:var(--amb-b);color:var(--amb-t)}.b-none{background:var(--neu-b);color:var(--tx2)}
+.item{display:flex;align-items:center;gap:var(--s-sm);padding:var(--s-xs) var(--s-sm);min-height:56px;background:var(--sup);border:1px solid var(--bd);border-radius:var(--r-md)}
+.thumb{width:36px;height:36px;border-radius:var(--r-sm);background:var(--sutil);flex:none;object-fit:cover;display:grid;place-items:center;overflow:hidden}
+.ellipsis{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* tabbar */
+.tabbar{display:flex;background:var(--sup);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0 14px;color:var(--tx2);font-size:12px}
+.tab .pill{width:56px;height:32px;border-radius:var(--r-full);display:grid;place-items:center;transition:background .25s}
+.tab.on{color:var(--brand);font-weight:700}.tab.on .pill{background:var(--brand-s)}
+/* CTA */
+.cta{position:relative;overflow:hidden;text-align:left;display:flex;flex-direction:column;gap:var(--s-sm);padding:var(--s-lg);border-radius:var(--r-lg);background:var(--brand);color:var(--inv);width:100%}
+.cta::after{content:"";position:absolute;width:200px;height:200px;border-radius:50%;background:#fff;opacity:.08;right:-40px;top:-50px}
+.cta .ico{width:48px;height:48px;border-radius:50%;background:var(--sup);display:grid;place-items:center}
+.cta .pillbtn{align-self:flex-start;background:var(--sup);color:var(--brand);font-size:12px;font-weight:700;padding:8px 16px;border-radius:var(--r-full)}
+/* cámara */
+#cam{background:var(--cam);color:#fff}
+#cam video,#cam .shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cam-top{position:absolute;left:0;right:0;top:0;padding:calc(12px + env(safe-area-inset-top)) 16px 0;display:flex;align-items:center;justify-content:space-between;z-index:3}
+.cbtn{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.4);display:grid;place-items:center;color:#fff}
+.cam-title{font-size:15px;font-weight:700;user-select:none;-webkit-user-select:none;padding:10px}
+.finder{position:absolute;left:50%;top:44%;width:64%;aspect-ratio:1/1.05;transform:translate(-50%,-50%);z-index:2;pointer-events:none}
+.finder i{position:absolute;width:30px;height:30px;border:4px solid #fff}
+.finder i:nth-child(1){left:0;top:0;border-right:0;border-bottom:0;border-top-left-radius:6px}
+.finder i:nth-child(2){right:0;top:0;border-left:0;border-bottom:0;border-top-right-radius:6px}
+.finder i:nth-child(3){left:0;bottom:0;border-right:0;border-top:0;border-bottom-left-radius:6px}
+.finder i:nth-child(4){right:0;bottom:0;border-left:0;border-top:0;border-bottom-right-radius:6px}
+.cam-hint{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(150px + env(safe-area-inset-bottom));z-index:3;display:flex;gap:8px;align-items:center;background:rgba(0,0,0,.45);padding:8px 16px;border-radius:var(--r-full);font-size:12px;white-space:nowrap}
+.cam-bottom{position:absolute;left:0;right:0;bottom:0;padding:0 40px calc(36px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;z-index:3}
+.shutter{width:80px;height:80px;border-radius:50%;border:4px solid #fff;display:grid;place-items:center}
+.shutter::after{content:"";width:62px;height:62px;border-radius:50%;background:#fff;transition:transform .15s}
+.shutter:active::after{transform:scale(.88)}
+.gal{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;width:56px}
+.gal span.b{width:48px;height:48px;border-radius:var(--r-sm);border:2px solid #fff;background:rgba(0,0,0,.4);display:grid;place-items:center;overflow:hidden}
+.cam-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px;text-align:center;z-index:1;background:radial-gradient(circle at 50% 40%,#2a2420,#191512 70%)}
+.cam-fallback[hidden]{display:none}
+.cam-fallback p{margin:0;color:#e9e3da;font-size:14px;line-height:20px}
+.cam-fallback .btn{max-width:260px}
+.veil{position:absolute;inset:0;background:#000;opacity:0;transition:opacity .35s var(--ease);z-index:4;pointer-events:none}
+.veil.show{opacity:.55;pointer-events:auto}
+.analyzing{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(0,0,0,.45);font-weight:700}
+.spin{width:44px;height:44px;border-radius:50%;border:4px solid rgba(255,255,255,.3);border-top-color:#fff;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.flash{position:absolute;inset:0;background:#fff;z-index:6;animation:fl .35s ease-out forwards;pointer-events:none}
+@keyframes fl{from{opacity:.9}to{opacity:0}}
+/* hojas */
+.sheet{color:var(--tx);position:absolute;left:0;right:0;bottom:0;z-index:5;background:var(--sup);border-radius:var(--r-xl) var(--r-xl) 0 0;box-shadow:0 -4px 24px rgba(0,0,0,.18);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .45s var(--ease),height .45s var(--ease);max-height:calc(100% - 54px)}
+.sheet.show{transform:translateY(0)}
+.sheet .grab{padding:12px 0 8px;display:flex;justify-content:center;touch-action:none;cursor:grab}
+.sheet .grab i{width:40px;height:4px;border-radius:2px;background:var(--asa)}
+.sheet .body{padding:0 var(--s-lg);overflow-y:auto;display:flex;flex-direction:column;gap:var(--s-md)}
+.sheet .foot{padding:var(--s-sm) var(--s-lg) calc(var(--s-xl) + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:var(--s-xs)}
+.face{width:64px;height:64px;border-radius:50%;flex:none;display:grid;place-items:center;color:#fff}
+.reason{border-radius:var(--r-md);padding:var(--s-sm) var(--s-md);font-size:14px;line-height:20px}
+.arow{display:flex;align-items:center;gap:var(--s-sm);padding:8px 0;border-bottom:1px solid var(--bd)}
+.arow:last-child{border-bottom:0}
+.dot{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;flex:none}
+.mine{font-size:11px;font-weight:700;color:var(--brand);background:var(--brand-s);border-radius:var(--r-full);padding:2px 8px;margin-left:8px}
+details summary{list-style:none;cursor:pointer}
+details summary::-webkit-details-marker{display:none}
+/* opciones */
+.opt{display:flex;align-items:center;gap:var(--s-sm);width:100%;min-height:52px;padding:0 var(--s-md);background:var(--sup);border:1px solid var(--bd);border-radius:var(--r-md);font-size:14px;font-weight:700;text-align:left;transition:background .2s,border-color .2s}
+.opt.added{background:var(--brand-s);border-color:var(--brand)}
+.opt .mk{width:24px;height:24px;border-radius:50%;margin-left:auto;display:grid;place-items:center;background:var(--brand);transform:scale(0);transition:transform .25s var(--ease)}
+.opt.on .mk{transform:scale(1)}
+.opt.addnew{background:var(--brand-s);border-color:var(--brand);color:var(--brand)}
+.hint{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--amb-t)}
+.hint.err{color:var(--red-t)}
+.list{display:flex;flex-direction:column;gap:var(--s-xs)}
+.backdrop{position:absolute;inset:0;background:#000;opacity:0;transition:opacity .35s var(--ease);z-index:4}
+.backdrop.show{opacity:.5}
+/* menú entrevistador */
+.banner{background:var(--amb-b);color:var(--amb-t);font-size:12px;font-weight:700;padding:8px 12px;border-radius:var(--r-sm)}
+.toast{position:absolute;left:50%;bottom:110px;transform:translate(-50%,20px);opacity:0;background:var(--tx);color:#fff;font-size:13px;padding:10px 16px;border-radius:var(--r-full);z-index:9;transition:all .3s var(--ease);pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.empty{font-size:13px;color:var(--tx2);line-height:18px}
+.fade-in{animation:fi .3s var(--ease)}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="phone"></div>
+<input id="fileCam" type="file" accept="image/*" capture="environment" hidden>
+<input id="fileGal" type="file" accept="image/*" hidden>
+<script>
+
+const CONFIG={
+  SUPABASE_URL:'https://owmjfixmjsufqepueaqc.supabase.co',      // ✅ Ya está puesta (tu Project URL)
+  SUPABASE_ANON_KEY:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93bWpmaXhtanN1ZnFlcHVlYXFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3NTA2NjUsImV4cCI6MjEwOTMyNjY2NX0.69FoFhteoHeAeFHP895CbPwCB_JVLPl12orS7KaoQN0'  // 👉 AQUÍ PEGA tu "anon public key" entre las comillas. Ej: 'eyJhbGciOi...'
+};
+/* ================================================= */
+/* ---------------- Datos ---------------- */
+const MAIN=[['lacteos','Lácteos'],['gluten','Gluten'],['huevo','Huevo'],['mani','Maní'],['frutos-secos','Frutos secos'],['soya','Soya'],['pescado','Pescado'],['mariscos','Mariscos'],['moluscos','Moluscos'],['ajonjoli','Ajonjolí'],['mostaza','Mostaza'],['apio','Apio'],['sulfitos','Sulfitos'],['altramuz','Altramuz']];
+const LABEL=Object.fromEntries(MAIN);
+const SUG=['Ajo','Ají','Arándano','Avena','Cacao','Café','Canela','Cebolla','Coco','Durazno','Fresa','Frijol','Garbanzo','Kion','Kiwi','Lenteja','Maíz','Mango','Manzana','Palta','Piña','Plátano','Quinua','Tomate'];
+const SNACKS={
+  alfajor:{name:'Alfajor de maicena',brand:'Dulce Hogar',contains:['lacteos','gluten','huevo'],may:['soya'],ing:'Harina de trigo, maicena, mantequilla, leche condensada, huevo, azúcar y lecitina de soya.',color:'#e7c9a9'},
+  galletas:{name:'Galletas de arroz con chía',brand:'Granos del Valle',contains:[],may:[],ing:'Arroz inflado, semillas de chía y sal marina.',color:'#f1de9e'},
+  papas:{name:'Papas al hilo',brand:'Snacks del Norte',contains:[],may:['gluten'],ing:'Papa, aceite vegetal y sal. Elaborado en una planta que también procesa trigo.',color:'#b9d3e0'},
+  barra:{name:'Barra de quinua',brand:'Andes Natural',contains:['ajonjoli'],may:['frutos-secos'],ing:'Quinua inflada, miel de abeja, pasas y ajonjolí. Elaborado en una planta que también procesa frutos secos.',color:'#d9c8e6'},
+  chocolate:{name:'Chocolate con leche',brand:'Cacaos del Sur',contains:['lacteos','soya'],may:['mani','frutos-secos'],ing:'Azúcar, manteca de cacao, leche en polvo, pasta de cacao y lecitina de soya. Puede contener maní y frutos secos.',color:'#8b5a3c'},
+  borrosa:{name:'Foto borrosa',unknown:true,color:'#d9c8e6'}
+};
+const norm=s=>s.normalize('NFD').replace(/[\u0300-\u0302\u0304-\u036f]/g,'').toLowerCase().trim();
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+
+/* ---------------- Estado ---------------- */
+const DEF=()=>({onboarded:false,allergies:[],customs:[],traces:false,history:[],snack:'alfajor',ai:true});
+let S;try{S=Object.assign(DEF(),JSON.parse(localStorage.getItem('alergicheck')||'{}'))}catch(e){S=DEF()}
+const save=()=>{try{localStorage.setItem('alergicheck',JSON.stringify(S))}catch(e){}};
+let view=S.onboarded?'inicio':'perfil';let histFilter='todos';
+let camStream=null,photoURL=null,result=null;
+
+/* ---------------- Íconos ---------------- */
+const I={
+ search:'<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="7.5" cy="7.5" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M12 12l4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+ check:(c='#fff')=>`<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.5l3.5 3.5L12 3.5" stroke="${c}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+ x:(c='#fff',s=12)=>`<svg width="${s}" height="${s}" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="${c}" stroke-width="2.2" stroke-linecap="round"/></svg>`,
+ warn:(c)=>`<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5l6 10.5H1z" stroke="${c}" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 5.5v3" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+ home:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2 8.5L10 2l8 6.5V18h-6v-6H8v6H2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
+ clock:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2"/><path d="M10 5.5V10l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+ user:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="6" r="4" stroke="currentColor" stroke-width="2"/><path d="M2.5 18c1.4-3.6 4.2-5.5 7.5-5.5s6.1 1.9 7.5 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+ camera:'<svg width="26" height="22" viewBox="0 0 26 22" fill="none"><rect x="1.5" y="5" width="23" height="15.5" rx="4" stroke="#7a4a35" stroke-width="2.2"/><circle cx="13" cy="12.5" r="4.5" stroke="#7a4a35" stroke-width="2.2"/><rect x="8" y="1.5" width="10" height="4" rx="1.5" fill="#7a4a35"/></svg>',
+ bolt:'<svg width="14" height="18" viewBox="0 0 14 18" fill="none"><path d="M8 1L1 10.5h5.5l-1 6.5L13 7.5H7.5L8 1z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+ img:'<svg width="26" height="20" viewBox="0 0 26 20" fill="none"><path d="M1 18l8-9 6 6 4-4 6 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="19" cy="5" r="2.5" fill="#fff"/></svg>',
+ spark:(c='#fff')=>`<svg width="12" height="12" viewBox="0 0 14 14"><path d="M7 0C7.7 4 10 6.3 14 7 10 7.7 7.7 10 7 14 6.3 10 4 7.7 0 7 4 6.3 6.3 4 7 0z" fill="${c}"/></svg>`,
+ shield:(c)=>`<svg width="16" height="18" viewBox="0 0 16 18" fill="none"><path d="M8 1l7 2.8v5.1c0 4.2-3 7.6-7 8.8-4-1.2-7-4.6-7-8.8V3.8L8 1z" stroke="${c}" stroke-width="1.8" stroke-linejoin="round"/><path d="M5 9l2.2 2.2L11.2 7" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+ chev:'<svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#5e574e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ back:'<svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M8.5 1.5L2 8l6.5 6.5" stroke="#1b1916" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+const FACE={
+ 'No apto':['var(--red)','<circle cx="22" cy="24" r="3.5" fill="#fff"/><circle cx="42" cy="24" r="3.5" fill="#fff"/><path d="M22 44c5-6 15-6 20 0" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/>'],
+ 'Apto':['var(--grn)','<circle cx="22" cy="24" r="3.5" fill="#fff"/><circle cx="42" cy="24" r="3.5" fill="#fff"/><path d="M22 38c5 7 15 7 20 0" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/>'],
+ 'Trazas':['var(--amb)','<circle cx="22" cy="24" r="3.5" fill="#fff"/><circle cx="42" cy="24" r="3.5" fill="#fff"/><path d="M22 42h20" stroke="#fff" stroke-width="3" stroke-linecap="round"/>'],
+ 'No reconocido':['var(--neu)','<text x="32" y="44" text-anchor="middle" font-size="34" font-weight="700" fill="#fff" font-family="Inter">?</text>']
+};
+const face=(v,size=64)=>`<div class="face" style="background:${FACE[v][0]};width:${size}px;height:${size}px"><svg width="${size}" height="${size}" viewBox="0 0 64 64">${FACE[v][1]}</svg></div>`;
+const snackArt=(k,w=40)=>{const s=SNACKS[k];if(k==='borrosa')return `<svg width="${w}" height="${w}" viewBox="0 0 40 40"><rect x="8" y="5" width="24" height="30" rx="4" fill="${s.color}" style="filter:blur(2px)"/></svg>`;
+ return `<svg width="${w}" height="${w}" viewBox="0 0 40 40"><rect x="6" y="8" width="28" height="24" rx="5" fill="${s.color}" stroke="#1b1916" stroke-width="1.2"/><rect x="7" y="15" width="26" height="10" fill="#fff"/></svg>`;};
+
+/* ---------------- Lógica ---------------- */
+function verdict(p){
+  if(p.unknown)return {v:'No reconocido',contains:[],may:[],custom:[]};
+  const mine=new Set(S.allergies);const hay=norm([p.ing||'',p.name||'',...(p.others||[])].join(' '));
+  const contains=p.contains.filter(a=>mine.has(a));
+  const custom=S.customs.filter(c=>c.on&&norm(c.text).length>=3&&hay.includes(norm(c.text))).map(c=>c.text);
+  const may=S.traces?p.may.filter(a=>mine.has(a)):[];
+  const v=(contains.length||custom.length)?'No apto':(may.length?'Trazas':'Apto');
+  return {v,contains,may,custom};
+}
+function demoProduct(){const s=SNACKS[S.snack];return Object.assign({},s,{ai:false})}
+const listJoin=a=>a.length<2?(a[0]||''):a.slice(0,-1).join(', ')+' y '+a[a.length-1];
+const timeNow=()=>new Date().toLocaleTimeString('es-PE',{hour:'numeric',minute:'2-digit'});
+
+/* ---------------- Render ---------------- */
+const $=s=>document.querySelector(s);
+const phone=$('#phone');
+function toast(t){let el=$('.toast');if(!el){el=document.createElement('div');el.className='toast';phone.appendChild(el)}el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),1800)}
+function tabbar(active){return `<nav class="tabbar">${[['inicio','Inicio',I.home],['historial','Historial',I.clock],['perfil','Perfil',I.user]].map(([k,l,ic])=>`<button class="tab ${active===k?'on':''}" data-go="${k}"><span class="pill">${ic}</span>${l}</button>`).join('')}</nav>`}
+function go(v){stopCam();view=v;render()}
+
+function render(){
+  if(view==='camara')return renderCam();
+  phone.innerHTML='';
+  const el=document.createElement('div');el.className='view fade-in';
+  if(view==='perfil')el.innerHTML=perfil();
+  if(view==='inicio')el.innerHTML=inicio();
+  if(view==='historial')el.innerHTML=historial();
+  phone.appendChild(el);bind(el);
+}
+function perfil(){
+  const customs=S.customs.filter(c=>c.on);
+  return `<div class="scroll"><div class="stack">
+   <div><h1 class="h-screen">¿A qué eres alérgico?</h1><p class="t-body" style="margin-top:4px">Marca todas tus alergias. Revisaremos cada snack contra esta lista antes de que lo compres.</p></div>
+   <button class="search" data-act="open-search">${I.search}<span>Buscar otra alergia (ej. kiwi, maíz)</span></button>
+   <div><p class="overline">Alérgenos más comunes</p><div class="chips">
+    ${MAIN.map(([k,l])=>`<button class="chip ${S.allergies.includes(k)?'on':''}" data-chip="${k}"><span class="ck">${I.check()}</span>${l}</button>`).join('')}
+    ${customs.map(c=>`<button class="chip on" data-custom="${esc(c.text)}" aria-label="Quitar ${esc(c.text)}"><span class="ck">${I.check()}</span>${esc(c.text)}</button>`).join('')}
+    <button class="chip add" data-act="open-search">+ Otra alergia</button>
+   </div></div>
+   <button class="card row" data-act="traces" style="text-align:left;width:100%"><div class="grow"><div style="font-size:14px;font-weight:700">Avisarme también de trazas</div><div class="t-cap" style="margin-top:2px">“Puede contener” contará como riesgo</div></div><span class="switch ${S.traces?'on':''}"></span></button>
+  </div></div>
+  <div class="footer"><div class="t-detail" style="text-align:center">${S.onboarded?'Tus cambios se guardan al tocar el botón.':'Puedes cambiarlo cuando quieras desde Perfil.'}</div><button class="btn btn-p" data-act="save">${S.onboarded?'Guardar cambios':'Guardar mis alergias'}</button></div>
+  ${S.onboarded?tabbar('perfil'):''}`;
+}
+function inicio(){
+  const tags=[...S.allergies.map(a=>`<span class="tag">${LABEL[a]}</span>`),...S.customs.filter(c=>c.on).map(c=>`<span class="tag">${esc(c.text)}</span>`)];
+  if(S.traces)tags.push('<span class="tag ghost">+ trazas</span>');
+  const rec=S.history.slice(0,2);
+  return `<div class="scroll"><div class="stack">
+   <div><h1 class="h-display">Hola</h1><p class="t-body">¿Qué snack vas a revisar hoy?</p></div>
+   <button class="card" data-go="perfil" style="text-align:left;width:100%;display:flex;flex-direction:column;gap:8px">
+     <div class="row"><span class="grow t-detail" style="font-weight:700">Tus alergias</span><span class="link">Editar</span></div>
+     ${tags.length?`<div class="chips" style="gap:6px">${tags.join('')}</div>`:'<div class="empty">Aún no marcas alergias. Toca Editar para elegirlas.</div>'}
+   </button>
+   <button class="cta" data-go="camara"><span class="ico">${I.camera}</span><span style="font-size:20px;line-height:26px;font-weight:700">Tómale una foto al snack</span><span style="font-size:13px;line-height:18px;opacity:.9">Nuestra IA lo reconoce, incluso detrás del vidrio de la máquina.</span><span class="pillbtn">Escanear ahora →</span></button>
+   <div><div class="row" style="margin-bottom:8px"><span class="grow" style="font-size:15px;font-weight:700">Revisados recientemente</span>${S.history.length?'<button class="link" data-go="historial">Ver todo</button>':''}</div>
+    ${rec.length?`<div class="list">${rec.map(itemHTML).join('')}</div>`:'<div class="empty">Todavía no revisas ningún snack. Toca “Escanear ahora” para empezar.</div>'}
+   </div>
+  </div></div>${tabbar('inicio')}`;
+}
+function itemHTML(h){const cls={'Apto':'b-apto','No apto':'b-noapto','Trazas':'b-trazas','No reconocido':'b-none'}[h.v];const lab=h.v==='No reconocido'?'Sin resultado':h.v;
+  return `<div class="item fade-in">${h.photo?`<img class="thumb" src="${h.photo}" alt="">`:`<span class="thumb">${snackArt(h.k,30)}</span>`}<div class="grow"><div class="ellipsis" style="font-size:14px;font-weight:700">${esc(h.name)}</div><div class="t-cap">${h.time}</div></div><span class="badge ${cls}">${lab}</span></div>`}
+function historial(){
+  const F={todos:()=>true,apto:h=>h.v==='Apto',noapto:h=>h.v==='No apto',trazas:h=>h.v==='Trazas'};
+  const list=S.history.filter(F[histFilter]);
+  return `<div class="scroll"><div class="stack">
+   <div><h1 class="h-display">Historial</h1><p class="t-body">Snacks que revisaste con la cámara</p></div>
+   <div class="chips" style="gap:6px">${[['todos','Todos'],['apto','Aptos'],['noapto','No aptos'],['trazas','Con trazas']].map(([k,l])=>`<button class="tag ${histFilter===k?'':'ghost'}" style="${histFilter===k?'background:var(--tx);color:#fff;':''}padding:8px 12px;min-height:36px" data-filter="${k}">${l}</button>`).join('')}</div>
+   ${list.length?`<div class="list">${list.map(itemHTML).join('')}</div>`:`<div class="empty">${S.history.length?'No hay snacks con este filtro.':'Aquí aparecerán los snacks que escanees.'}</div>`}
+  </div></div>${tabbar('historial')}`;
+}
+
+/* ---------------- Cámara ---------------- */
+function renderCam(){
+  phone.innerHTML=`<div class="view" id="cam">
+   <video playsinline muted autoplay></video>
+   <div class="cam-fallback" id="fb" hidden>${I.camera.replace(/#7a4a35/g,'#fff')}<p>Toca el botón para tomarle una foto al snack con la cámara de tu teléfono, o elige una de tu galería.</p><button class="btn btn-p" data-act="native-cam">Tomar foto</button></div>
+   <div class="finder"><i></i><i></i><i></i><i></i></div>
+   <div class="cam-top"><button class="cbtn" data-act="close-cam" aria-label="Cerrar">${I.x('#fff',12)}</button><span class="cam-title" id="camTitle">Toma una foto del snack</span><button class="cbtn" aria-label="Flash">${I.bolt}</button></div>
+   <div class="cam-hint">${I.spark()} Encuadra el empaque, aunque esté tras el vidrio</div>
+   <div class="cam-bottom"><button class="gal" data-act="gallery"><span class="b">${I.img}</span>Galería</button><button class="shutter" data-act="shoot" aria-label="Tomar foto"></button><span style="width:56px"></span></div>
+   <div class="veil" id="veil"></div>
+  </div>`;
+  bind(phone);startCam();bindSecret();
+}
+async function startCam(){
+  const fb=$('#fb');const v=$('#cam video');
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error('no');
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+    if(view!=='camara'){stopCam();return}
+    v.srcObject=camStream;await v.play().catch(()=>{});
+  }catch(e){if(fb)fb.hidden=false;if(v)v.style.display='none'}
+}
+function stopCam(){if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null}}
+function shoot(){
+  const v=$('#cam video');let url=null;
+  if(camStream&&v&&v.videoWidth){const c=document.createElement('canvas');const sc=Math.min(1,900/v.videoWidth);c.width=v.videoWidth*sc;c.height=v.videoHeight*sc;c.getContext('2d').drawImage(v,0,0,c.width,c.height);url=c.toDataURL('image/jpeg',.82)}
+  const f=document.createElement('div');f.className='flash';$('#cam').appendChild(f);
+  if(url)analyze(url);else $('#fileCam').click();
+}
+let sampleFn=null;(async()=>{try{if(window.claude&&claude.use){sampleFn=await claude.use('sample');if(sampleFn){const l=await sampleFn.limits().catch(()=>null);if(!l||!l.images)sampleFn=null}}}catch(e){sampleFn=null}})();
+const KEYS=MAIN.map(m=>m[0]);
+const PROMPT=`Eres el reconocedor de productos de AlergiCheck, una app para estudiantes con alergias en Perú.
+La imagen es la foto de un snack o bebida empaquetada, a veces tomada detrás del vidrio de una máquina expendedora.
+1) Identifica el producto (nombre comercial y marca) leyendo el empaque y usando lo que sepas de ese producto tal como se vende en Perú.
+2) Indica sus alérgenos usando SOLO estas claves:
+lacteos (leche y derivados), gluten (trigo, cebada, centeno, avena), huevo, mani, frutos-secos, soya, pescado, mariscos, moluscos, ajonjoli, mostaza, apio, sulfitos, altramuz.
+"contiene" = ingredientes del producto; "puede_contener" = advertencias de trazas ("puede contener", "elaborado en una planta que también procesa").
+3) En "otros" lista en minúsculas otros ingredientes relevantes para alergias poco comunes (ej. cacao, maíz, coco, canela, colorantes).
+Si la foto no muestra un producto alimenticio o no se puede distinguir, responde reconocido=false.
+Responde SOLO con un objeto JSON, sin texto adicional:
+{"reconocido":true,"nombre":"Chips Ahoy! Mini","marca":"Nabisco","contiene":["gluten","soya"],"puede_contener":["lacteos"],"otros":["cacao"],"ingredientes":"Resumen corto en español de los ingredientes principales.","confianza":"alta"}
+"confianza" es "alta", "media" o "baja".`;
+async function dataURLtoBlob(u){const [m,b]=u.split(',');const mime=(m.match(/data:(.*?);/)||[,'image/jpeg'])[1];const bin=atob(b);const arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);return new Blob([arr],{type:mime})}
+function toProduct(j,via){
+  if(!j||j.reconocido===false)return {unknown:true,ai:true,via,name:'No reconocido'};
+  const clean=a=>Array.isArray(a)?a.map(x=>String(x).toLowerCase().trim()).filter(x=>KEYS.includes(x)):[];
+  const c=clean(j.contiene);
+  return {ai:true,via,name:String(j.nombre||'Producto sin nombre'),brand:String(j.marca||''),contains:c,may:clean(j.puede_contener).filter(x=>!c.includes(x)),others:Array.isArray(j.otros)?j.otros.map(String):[],ing:String(j.ingredientes||''),conf:String(j.confianza||'')};
+}
+async function viaBackend(url){
+  const [meta,b64]=url.split(',');const mime=(meta.match(/data:(.*?);/)||[,'image/jpeg'])[1];
+  const r=await fetch(CONFIG.SUPABASE_URL.replace(/\/$/,'')+'/functions/v1/reconocer',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+CONFIG.SUPABASE_ANON_KEY,'apikey':CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({image:b64,mime})});
+  const j=await r.json();if(!r.ok)throw new Error(j.error||('HTTP '+r.status));
+  return toProduct(j,'gemini');
+}
+const backendOn=()=>!!(CONFIG.SUPABASE_URL&&CONFIG.SUPABASE_ANON_KEY);
+async function recognize(url){
+  if(!S.ai)return demoProduct();
+  if(backendOn()){try{return await viaBackend(url)}catch(e){console.warn('Backend:',e);if(!sampleFn)return {unknown:true,ai:true,failed:true,name:'No reconocido'}}}
+  if(!sampleFn)return demoProduct();
+  try{
+    const blob=await dataURLtoBlob(url);
+    const j=await sampleFn.json(PROMPT,{images:[blob],modelTier:'default',effort:'low'});
+    return toProduct(j,'claude');
+  }catch(e){
+    if(['not_granted','sampling_disabled','images_unavailable','capability_disabled','not_declared'].includes(e&&e.code)){sampleFn=null;toast('La IA no está disponible; usamos el modo demo');return demoProduct()}
+    return {unknown:true,ai:true,failed:true,name:'No reconocido'};
+  }
+}
+function analyze(url){
+  photoURL=url;stopCam();
+  const cam=$('#cam');const v=cam.querySelector('video');if(v)v.remove();const fb=$('#fb');if(fb)fb.remove();
+  let img=cam.querySelector('.shot');if(!img){img=document.createElement('img');img.className='shot';cam.prepend(img)}img.src=url;
+  cam.querySelectorAll('.cam-hint,.cam-bottom,.finder').forEach(n=>n.style.display='none');
+  const a=document.createElement('div');a.className='analyzing';a.innerHTML='<div class="spin"></div><span>Analizando con IA…</span><span style="font-weight:400;font-size:13px;opacity:.85">Leyendo el empaque y sus alérgenos</span>';cam.appendChild(a);
+  const t0=Date.now();
+  recognize(url).then(p=>{setTimeout(()=>{a.remove();showResult(p)},Math.max(0,1000-(Date.now()-t0)))});
+}
+function showResult(p){
+  const s=p;const k=S.snack;result=verdict(p);
+  S.history.unshift({k,name:s.unknown?'No reconocido':s.name,v:result.v,time:'Hoy, '+timeNow(),photo:thumbOf(photoURL)});S.history=S.history.slice(0,30);save();
+  const r=result,v=r.v;
+  const col={'No apto':['var(--red-t)','var(--red-b)'],'Apto':['var(--grn-t)','var(--grn-b)'],'Trazas':['var(--amb-t)','var(--amb-b)'],'No reconocido':['var(--tx)','var(--neu-b)']}[v];
+  const title={'No apto':'No es apto para ti','Apto':'¡Apto para ti!','Trazas':'Puede contener trazas','No reconocido':'No pudimos reconocerlo'}[v];
+  const hit=[...r.contains.map(a=>LABEL[a].toLowerCase()),...r.custom.map(c=>c.toLowerCase())];
+  let reason;
+  if(v==='No apto')reason=`Contiene ${listJoin(hit)}, que marcaste en tu perfil.`;
+  else if(v==='Trazas')reason=`No lo lleva como ingrediente, pero puede tener trazas de ${listJoin(r.may.map(a=>LABEL[a].toLowerCase()))}.`;
+  else if(v==='Apto')reason=(S.allergies.length||S.customs.some(c=>c.on))?'No encontramos ninguna de tus alergias en su ficha.':'No marcaste alergias en tu perfil. Revisa la ficha antes de comer.';
+  else reason=s.failed?'No pudimos analizar la foto en este momento. Intenta otra vez.':'La foto salió borrosa o no logramos identificar el producto.';
+  let rows='';
+  if(!s.unknown){const all=[...s.contains.map(a=>[LABEL[a],'Contiene',S.allergies.includes(a)]),...s.may.map(a=>[LABEL[a],'Puede contener',S.allergies.includes(a)]),...r.custom.map(c=>[cap(c),'Contiene',true])];
+   const sty={'Contiene':['var(--red-b)',I.x('#b42318',9),'var(--red-t)'],'Puede contener':['var(--amb-b)',I.warn('#a15c00'),'var(--amb-t)']};
+   rows=all.length?all.map(([l,st,m])=>`<div class="arow"><span class="dot" style="background:${sty[st][0]}">${sty[st][1]}</span><span class="grow" style="font-size:15px;font-weight:700">${esc(l)}${m?'<span class="mine">tuya</span>':''}</span><span style="font-size:13px;font-weight:700;color:${sty[st][2]}">${st}</span></div>`).join(''):`<div class="arow"><span class="dot" style="background:var(--grn-b)">${I.check('#1c7a47')}</span><span class="grow" style="font-size:15px;font-weight:700">Ningún alérgeno declarado</span></div>`;}
+  const cam=$('#cam');$('#veil').classList.add('show');
+  const sh=document.createElement('div');sh.className='sheet';
+  sh.innerHTML=`<div class="grab"><i></i></div><div class="body">
+    <div class="row" style="gap:16px">${face(v)}<div class="grow"><h2 class="h-sheet" style="color:${col[0]}">${title}</h2><div class="t-detail">${s.unknown?'No hay coincidencias':esc(s.name)+(s.brand?' · '+esc(s.brand):'')}</div></div></div>
+    <div class="reason" style="background:${col[1]};color:${col[0]}">${reason}</div>
+    ${s.unknown?`<div><p class="overline">Para la próxima foto</p><div class="t-body" style="color:var(--tx)">• Acércate y evita los reflejos del vidrio<br>• Que se vea el nombre del empaque</div></div>`:
+    `<div><p class="overline">Alérgenos de este snack</p><div>${rows}</div></div>
+     <details><summary class="link">Ver ingredientes</summary><p class="t-detail" style="margin:4px 0 0">${esc(s.ing||"Sin detalle de ingredientes.")}</p></details>
+     <div class="row t-cap" style="gap:6px">${I.spark('#5e574e')} ${s.ai?(s.via==='gemini'?'Identificado con IA a partir de tu foto':'Identificado por Claude a partir de tu foto'):'Modo demo · producto elegido por el entrevistador'}</div>${s.ai&&s.conf&&s.conf!=='alta'?'<div class="hint">'+I.warn('#a15c00')+' Confianza '+esc(s.conf)+': confirma con la etiqueta del empaque.</div>':''}`}
+  </div><div class="foot">${s.unknown?'<button class="btn btn-p" data-act="again">Tomar otra foto</button><button class="btn btn-s" data-act="gallery">Elegir de la galería</button>':'<button class="btn btn-p" data-act="again">Escanear otro snack</button><button class="btn btn-s" data-go="inicio">Volver al inicio</button>'}</div>`;
+  cam.appendChild(sh);bind(sh);requestAnimationFrame(()=>requestAnimationFrame(()=>sh.classList.add('show')));
+}
+function thumbOf(url){if(!url)return null;try{const im=new Image();im.src=url;const c=document.createElement('canvas');c.width=72;c.height=72;const ctx=c.getContext('2d');if(im.complete&&im.naturalWidth){const m=Math.min(im.naturalWidth,im.naturalHeight);ctx.drawImage(im,(im.naturalWidth-m)/2,(im.naturalHeight-m)/2,m,m,0,0,72,72);return c.toDataURL('image/jpeg',.7)}}catch(e){}return null}
+function readFile(input){const f=input.files&&input.files[0];input.value='';if(!f)return;const r=new FileReader();r.onload=()=>{if(view!=='camara'){view='camara';renderCam();setTimeout(()=>analyze(r.result),50)}else analyze(r.result)};r.readAsDataURL(f)}
+$('#fileCam').addEventListener('change',e=>readFile(e.target));
+$('#fileGal').addEventListener('change',e=>readFile(e.target));
+
+/* ---------------- Menú entrevistador (mantén presionado el título de la cámara o tócalo 3 veces) ---------------- */
+function bindSecret(){const t=$('#camTitle');if(!t)return;let timer,taps=0,last=0;
+  t.addEventListener('pointerdown',()=>{timer=setTimeout(openMod,650)});['pointerup','pointerleave','pointercancel'].forEach(e=>t.addEventListener(e,()=>clearTimeout(timer)));
+  t.addEventListener('click',()=>{const n=Date.now();taps=n-last<450?taps+1:1;last=n;if(taps>=3){taps=0;openMod()}});}
+function openMod(){
+  const cam=$('#cam');if(cam.querySelector('.mod'))return;
+  const bd=document.createElement('div');bd.className='backdrop mod-bd';cam.appendChild(bd);
+  const sh=document.createElement('div');sh.className='sheet mod';
+  sh.innerHTML=`<div class="grab"><i></i></div><div class="body">
+   <div class="banner">Solo para el entrevistador · no es parte de la app</div>
+   <button class="card row" data-act="ai-mode" style="text-align:left;width:100%"><div class="grow"><div style="font-size:14px;font-weight:700">Reconocimiento real con Claude</div><div class="t-cap" style="margin-top:2px">${backendOn()?'La IA (Gemini vía Supabase) identifica el producto de la foto.':sampleFn?'Claude identifica el producto de la foto.':'No disponible en esta vista; se usa el modo demo.'}</div></div><span class="switch ${S.ai&&(sampleFn||backendOn())?'on':''}"></span></button>
+   <h2 class="h-sheet">Modo demo: ¿qué snack mostrar?</h2>
+   <p class="t-body">Se usa si apagas el reconocimiento real o si la IA no está disponible.</p>
+   <div class="list">${Object.entries(SNACKS).map(([k,s])=>`<button class="opt ${S.snack===k?'on added':''}" data-snack="${k}"><span class="thumb">${snackArt(k,30)}</span>${s.name}<span class="mk">${I.check()}</span></button>`).join('')}</div>
+   <button class="btn btn-s" data-act="reset" style="margin-top:4px">Reiniciar entrevista (borra perfil e historial)</button>
+  </div><div class="foot"><button class="btn btn-p" data-act="close-mod">Listo</button></div>`;
+  cam.appendChild(sh);bind(sh);bd.onclick=closeMod;requestAnimationFrame(()=>{bd.classList.add('show');sh.classList.add('show')});
+}
+function closeMod(){const sh=$('.mod'),bd=$('.mod-bd');if(!sh)return;sh.classList.remove('show');bd.classList.remove('show');setTimeout(()=>{sh.remove();bd.remove()},450)}
+
+/* ---------------- Hoja: otra alergia (búsqueda real) ---------------- */
+let q='';let expanded=false;
+function openSearch(focus){
+  q='';expanded=!!focus;
+  const bd=document.createElement('div');bd.className='backdrop srch-bd';phone.appendChild(bd);
+  const sh=document.createElement('div');sh.className='sheet srch';sh.style.height=expanded?'calc(100% - 54px)':'62%';
+  sh.innerHTML=`<div class="grab"><i></i></div><div class="body" style="padding-bottom:4px">
+    <div class="row"><h2 class="h-sheet grow">Agrega otra alergia</h2><button class="link" data-act="close-search">Cerrar</button></div>
+    <label class="search" id="sbox">${I.search}<input id="sinput" type="text" inputmode="text" autocomplete="off" autocapitalize="sentences" placeholder="Escribe una alergia" maxlength="40" enterkeyhint="done"></label>
+  </div><div class="body" id="sres" style="flex:1;padding-top:12px;padding-bottom:8px"></div>
+  <div class="foot"><button class="btn btn-p" data-act="done-search">Listo</button></div>`;
+  phone.appendChild(sh);bind(sh);bd.onclick=closeSearch;
+  const inp=$('#sinput');
+  inp.addEventListener('input',()=>{q=inp.value;drawSearch()});
+  inp.addEventListener('focus',()=>{$('#sbox').classList.add('focus');setExpanded(true)});
+  inp.addEventListener('blur',()=>$('#sbox').classList.remove('focus'));
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addTyped()}});
+  dragSheet(sh);drawSearch();
+  requestAnimationFrame(()=>{bd.classList.add('show');sh.classList.add('show');if(focus)setTimeout(()=>inp.focus(),300)});
+}
+function setExpanded(v){expanded=v;const sh=$('.srch');if(sh)sh.style.height=v?'calc(100% - 54px)':'62%'}
+function dragSheet(sh){const g=sh.querySelector('.grab');let y0=null;
+  g.addEventListener('pointerdown',e=>{y0=e.clientY;g.setPointerCapture(e.pointerId)});
+  g.addEventListener('pointerup',e=>{if(y0===null)return;const dy=e.clientY-y0;y0=null;
+    if(dy<-30)setExpanded(true);else if(dy>30){if(expanded)setExpanded(false);else closeSearch()}else setExpanded(!expanded)});}
+function drawSearch(){
+  const box=$('#sres');if(!box)return;const qn=norm(q);const len=q.trim().length;
+  const exists=S.customs.some(c=>norm(c.text)===qn)||MAIN.some(([,l])=>norm(l)===qn);
+  const sugs=SUG.filter(s=>!S.customs.some(c=>norm(c.text)===norm(s))&&(!qn||norm(s).includes(qn)));
+  let h='';
+  if(len>0&&len<3)h+=`<div class="hint">${I.warn('#a15c00')} Escribe al menos 3 letras para agregarla</div>`;
+  else if(len>=3&&exists)h+=`<div class="hint">${I.check('#a15c00')} Ya está en tu lista</div>`;
+  else if(len>=3&&!sugs.some(s=>norm(s)===qn))h+=`<button class="opt addnew" data-act="add-typed">Agregar “${esc(cap(q.trim()))}”</button>`;
+  if(S.customs.length){h+=`<div><p class="overline">Agregadas</p><div class="list">${S.customs.map((c,i)=>`<button class="opt added ${c.on?'on':''}" data-toggle="${i}">${esc(c.text)}<span class="mk">${I.check()}</span></button>`).join('')}</div></div>`}
+  h+=`<div><p class="overline">${qn?'Sugerencias que coinciden':'Sugerencias'}</p>${sugs.length?`<div class="list">${sugs.map(s=>`<button class="opt" data-sug="${esc(s)}">${esc(s)}<span class="mk">${I.check()}</span></button>`).join('')}</div>`:'<div class="empty">No hay sugerencias con ese nombre. Puedes agregarla tal cual la escribiste.</div>'}</div>`;
+  box.innerHTML=h;bind(box);
+}
+function addCustom(text){text=cap(text.trim());if(norm(text).length<3)return false;
+  const ex=S.customs.find(c=>norm(c.text)===norm(text));if(ex){ex.on=true}else S.customs.push({text,on:true});
+  const main=MAIN.find(([,l])=>norm(l)===norm(text));if(main){S.customs=S.customs.filter(c=>norm(c.text)!==norm(text));if(!S.allergies.includes(main[0]))S.allergies.push(main[0]);}
+  return true}
+function addTyped(){if(q.trim().length<3){drawSearch();return}if(addCustom(q)){toast('Agregaste '+cap(q.trim()));q='';const i=$('#sinput');if(i)i.value='';drawSearch();if(view==='perfil')refreshPerfil()}}
+function closeSearch(){const sh=$('.srch'),bd=$('.srch-bd');if(!sh)return;S.customs=S.customs.filter(c=>c.on);save();sh.classList.remove('show');bd.classList.remove('show');setTimeout(()=>{sh.remove();bd.remove();if(view==='perfil')refreshPerfil()},450)}
+function refreshPerfil(){const sc=phone.querySelector('.scroll');const top=sc?sc.scrollTop:0;const sheet=$('.srch'),bd=$('.srch-bd');const el=phone.querySelector('.view');const tmp=document.createElement('div');tmp.innerHTML=perfil();el.innerHTML=tmp.innerHTML;bind(el);const sc2=el.querySelector('.scroll');if(sc2)sc2.scrollTop=top;if(sheet){phone.appendChild(bd);phone.appendChild(sheet)}}
+
+/* ---------------- Eventos ---------------- */
+function bind(root){
+  root.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+  root.querySelectorAll('[data-chip]').forEach(b=>b.onclick=()=>{const k=b.dataset.chip;const i=S.allergies.indexOf(k);if(i>=0)S.allergies.splice(i,1);else S.allergies.push(k);b.classList.toggle('on');save()});
+  root.querySelectorAll('[data-custom]').forEach(b=>b.onclick=()=>{const t=b.dataset.custom;const c=S.customs.find(c=>c.text===t);if(c)c.on=false;b.style.transition='opacity .25s,transform .25s';b.style.opacity=0;b.style.transform='scale(.9)';setTimeout(()=>{S.customs=S.customs.filter(c=>c.on);save();refreshPerfil();toast('Quitaste '+t)},250)});
+  root.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{histFilter=b.dataset.filter;render()});
+  root.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>{const c=S.customs[+b.dataset.toggle];c.on=!c.on;b.classList.toggle('on',c.on);save()});
+  root.querySelectorAll('[data-sug]').forEach(b=>b.onclick=()=>{b.classList.add('on');setTimeout(()=>{addCustom(b.dataset.sug);save();q='';const i=$('#sinput');if(i)i.value='';drawSearch();if(view==='perfil')refreshPerfil()},220)});
+  root.querySelectorAll('[data-snack]').forEach(b=>b.onclick=()=>{S.snack=b.dataset.snack;save();root.querySelectorAll('[data-snack]').forEach(x=>x.classList.toggle('on',x===b));root.querySelectorAll('[data-snack]').forEach(x=>x.classList.toggle('added',x===b))});
+  root.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{const a=b.dataset.act;
+    if(a==='open-search')openSearch(b.classList.contains('search'));
+    if(a==='close-search'||a==='done-search'){if(a==='done-search'&&q.trim().length>=3)addCustom(q);closeSearch()}
+    if(a==='add-typed')addTyped();
+    if(a==='traces'){S.traces=!S.traces;b.querySelector('.switch').classList.toggle('on',S.traces);save()}
+    if(a==='save'){S.customs=S.customs.filter(c=>c.on);S.onboarded=true;save();go('inicio')}
+    if(a==='close-cam')go('inicio');
+    if(a==='shoot')shoot();
+    if(a==='gallery')$('#fileGal').click();
+    if(a==='native-cam')$('#fileCam').click();
+    if(a==='again'){view='camara';renderCam()}
+    if(a==='close-mod')closeMod();
+    if(a==='ai-mode'){if(!sampleFn&&!backendOn()){toast('La IA no está disponible en esta vista');return}S.ai=!S.ai;save();b.querySelector('.switch').classList.toggle('on',S.ai)}
+    if(a==='reset'){S=DEF();save();closeMod();setTimeout(()=>{view='perfil';stopCam();render();toast('Entrevista reiniciada')},460)}
+  });
+}
+render();
+</script>
+</body>
+</html>
