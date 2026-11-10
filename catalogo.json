@@ -2,6 +2,7 @@
  "cafeteria": "Jacinto & Cornelia",
  "sede": "UPC San Isidro",
  "nota": "Fichas de prueba armadas con las etiquetas de la vitrina y la carta. Los alérgenos deben confirmarse con la cafetería.",
+ "actualizado": "2026-11-04",
  "productos": [
   {
    "id": "sandwich-hamburguesa",

@@ -494,7 +494,7 @@ function analyze(url){
 let vitrina=null;
 function showResult(p){
   if(p.multi){vitrina=p;showVitrina();return}
-  const s=p;const k=S.snack;result=verdict(p);if(!s.when)s.when=dateNow();LABEL_SRC=s.img||photoURL;
+  const s=p;const k=S.snack;result=verdict(p);if(!s.when)s.when=dateNow();LABEL_SRC=s.img||photoURL;LABEL_OWN=!s.img;
   const entry={id:Date.now(),k,name:s.unknown?'No reconocido':s.name,v:result.v,time:dateNow(),photo:null,big:null,p:s,r:result};
   S.history.unshift(entry);S.history=S.history.slice(0,30);save();
   shrink(photoURL,72,true).then(t=>{entry.photo=t;return shrink(photoURL,520,false)}).then(b=>{entry.big=b;try{save()}catch(e){entry.big=null;save()}});
@@ -535,12 +535,12 @@ function buildSheet(s,r,fromHist){
   sh.innerHTML=`<div class="grab"><i></i></div><div class="body">
     <div class="row hd" style="gap:16px">${face(v)}<div class="grow"><h2 class="h-sheet" style="color:${col[0]}">${title}</h2><div class="t-detail">${s.unknown?'No hay coincidencias':esc(s.name)+(s.brand?' · '+esc(s.brand):'')+(s.price!=null?' · S/ '+Number(s.price).toFixed(2):'')}</div></div></div>
     <div class="reason" style="background:${col[1]};color:${col[0]}">${reason}</div>
-    ${s.unknown?`<div><p class="overline">Para la próxima foto</p><div class="t-body" style="color:var(--tx)">• Acércate y evita los reflejos del vidrio<br>• Que se vea el nombre del empaque<br>• O búscalo por su nombre o su código de barras</div></div>`:
+    ${s.unknown?`<div><p class="overline">Para la próxima foto</p><div class="t-body" style="color:var(--tx)">• Acércate y evita los reflejos del vidrio<br>• Que se vea el nombre del empaque<br>• O búscalo por su nombre</div></div>`:
     `<div><p class="overline">Alérgenos de este snack</p><div>${rows}</div></div>
      <details><summary class="link">Ver ingredientes</summary><p class="t-detail" style="margin:4px 0 0">${esc(s.ing||"Sin detalle de ingredientes.")}</p></details>
      ${nutHTML(s.nut)}
      ${srcHTML(s)}${s.conf&&s.conf!=='alta'?'<div class="hint">'+I.warn('#a15c00')+' Certeza '+esc(s.conf)+': confirma con la etiqueta del empaque.</div>':''}`}
-  </div><div class="foot">${fromHist?'<button class="btn btn-p" data-act="again">Escanear otro snack</button><button class="btn btn-s" data-act="back-hist">Volver</button>':s.unknown?'<button class="btn btn-p" data-act="again">Tomar otra foto</button><button class="btn btn-s" data-act="alts">Buscar por nombre o código</button>':s.fromVit&&vitrina?'<button class="btn btn-p" data-act="back-vit">Ver los otros productos</button><button class="btn btn-s" data-go="inicio">Volver al inicio</button>':'<button class="btn btn-p" data-act="again">Escanear otro snack</button><button class="btn btn-s" data-go="inicio">Volver al inicio</button>'}</div>`;
+  </div><div class="foot">${fromHist?'<button class="btn btn-p" data-act="again">Escanear otro snack</button><button class="btn btn-s" data-act="back-hist">Volver</button>':s.unknown?'<button class="btn btn-p" data-act="again">Tomar otra foto</button><button class="btn btn-s" data-act="alts">Buscar por nombre</button>':s.fromVit&&vitrina?'<button class="btn btn-p" data-act="back-vit">Ver los otros productos</button><button class="btn btn-s" data-go="inicio">Volver al inicio</button>':'<button class="btn btn-p" data-act="again">Escanear otro snack</button><button class="btn btn-s" data-go="inicio">Volver al inicio</button>'}</div>`;
   bind(sh);dragResult(sh,fromHist);requestAnimationFrame(()=>requestAnimationFrame(()=>sh.classList.add('show')));
   return sh;
 }
@@ -576,7 +576,7 @@ function openHist(id){
   histFrom=view;stopCam();view='detalle';
   phone.innerHTML=`<div class="view" id="cam">${h.big||h.photo?`<img class="shot" src="${h.big||h.photo}" alt="">`:''}<div class="cam-top"><button class="cbtn" data-act="back-hist" aria-label="Volver">${I.x('#fff',12)}</button><span class="cam-title">${esc(h.time)}</span><span style="width:44px"></span></div><div class="veil" id="veil"></div></div>`;
   bind(phone);
-  LABEL_SRC=h.p.img||h.big||h.photo;$('#cam').appendChild(buildSheet(h.p,h.r,true));
+  LABEL_SRC=h.p.img||h.big||h.photo;LABEL_OWN=!h.p.img;$('#cam').appendChild(buildSheet(h.p,h.r,true));
 }
 function thumbOf(url){if(!url)return null;try{const im=new Image();im.src=url;const c=document.createElement('canvas');c.width=72;c.height=72;const ctx=c.getContext('2d');if(im.complete&&im.naturalWidth){const m=Math.min(im.naturalWidth,im.naturalHeight);ctx.drawImage(im,(im.naturalWidth-m)/2,(im.naturalHeight-m)/2,m,m,0,0,72,72);return c.toDataURL('image/jpeg',.7)}}catch(e){}return null}
 function readFile(input){const f=input.files&&input.files[0];input.value='';if(!f)return;const r=new FileReader();r.onload=async()=>{const small=await shrink(r.result,1024,false,.8);const u=small||r.result;if(view!=='camara'){view='camara';renderCam();setTimeout(()=>analyze(u),50)}else analyze(u)};r.readAsDataURL(f)}
@@ -584,7 +584,7 @@ $('#fileCam').addEventListener('change',e=>readFile(e.target));
 $('#fileGal').addEventListener('change',e=>readFile(e.target));
 
 /* ---------------- A1 · fuente, fecha, certeza y etiqueta original ---------------- */
-let LABEL_SRC=null;
+let LABEL_SRC=null,LABEL_OWN=true;
 const CONF_TXT={alta:'alta',media:'media',baja:'baja'};
 function srcHTML(s){
   let src;
@@ -593,12 +593,12 @@ function srcHTML(s){
   else if(s.ai)src='<b>Fuente:</b> la IA leyó el empaque de tu foto.';
   else src='<b>Fuente:</b> modo demo (producto de ejemplo).';
   const c=CONF_TXT[s.conf];const n={alta:3,media:2,baja:1}[s.conf]||0;
-  return `<div class="srcbox"><div class="l1">${I.shield('#1c7a47')}<span>${src}<br>Revisado: ${esc(s.when||dateNow())}</span></div>
+  return `<div class="srcbox"><div class="l1">${I.shield('#1c7a47')}<span>${src}<br>${s.fuente==='cafeteria'&&CAT_DATE?'Ficha actualizada: '+esc(CAT_DATE):'Consultado: '+esc(s.when||dateNow())}</span></div>
     <div class="acts">${c?`<span class="conf ${c}" title="Nivel de certeza"><i>${[1,2,3].map(k=>`<b class="${k<=n?'f':''}"></b>`).join('')}</i>Certeza ${c}</span>`:''}
-    ${LABEL_SRC?`<button class="mini" data-act="label">${I.eye}Ver etiqueta original</button>`:''}<button class="mini" data-act="how">¿Cómo funciona?</button></div></div>`;
+    ${LABEL_SRC?`<button class="mini" data-act="label">${I.eye}${s.img?'Ver etiqueta original':'Ver tu foto'}</button>`:''}<button class="mini" data-act="how">¿Cómo funciona?</button></div></div>`;
 }
 function showLabel(){if(!LABEL_SRC)return;const v=document.createElement('div');v.className='lbl-view';
-  v.innerHTML=`<div class="cam-top" style="position:relative"><button class="cbtn" aria-label="Cerrar">${I.x('#fff',12)}</button><span class="cam-title" style="color:#fff">Etiqueta original</span><span style="width:44px"></span></div><img src="${LABEL_SRC}" alt="Foto de la etiqueta del producto"><div class="cap">Compara con lo que dice el empaque si tienes dudas.</div>`;
+  v.innerHTML=`<div class="cam-top" style="position:relative"><button class="cbtn" aria-label="Cerrar">${I.x('#fff',12)}</button><span class="cam-title" style="color:#fff">${LABEL_OWN?'Tu foto':'Etiqueta original'}</span><span style="width:44px"></span></div><img src="${LABEL_SRC}" alt="Foto de la etiqueta del producto"><div class="cap">${LABEL_OWN?'Esta es la foto que tomaste. Si tienes dudas, revisa el empaque o pregunta en caja.':'Compara con lo que dice el empaque si tienes dudas.'}</div>`;
   phone.appendChild(v);v.querySelector('button').onclick=()=>v.remove()}
 
 /* ---------------- A7 · información nutricional (opcional) ---------------- */
@@ -613,7 +613,7 @@ function miniSheet(html){const bd=document.createElement('div');bd.className='ba
   const close=()=>{bd.classList.remove('show');sh.classList.remove('show');setTimeout(()=>{bd.remove();sh.remove()},450)};bd.onclick=close;sh.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);return {sh,close}}
 function howSheet(){miniSheet(`<div class="body" style="padding-bottom:4px"><h2 class="h-sheet">¿Cómo funciona el escaneo?</h2>
   <ol class="how"><li><span>1</span><div><b>Tomas una foto</b> del empaque o de la vitrina. Funciona mejor si el nombre se lee y no hay reflejos.</div></li>
-  <li><span>2</span><div><b>Buscamos el producto</b> en las fichas de la cafetería. Si no está, una IA (Gemini) lee el nombre y la lista de ingredientes del empaque.</div></li>
+  <li><span>2</span><div><b>Reconocemos el producto:</b> una IA lee el nombre del empaque o el cartel de la vitrina y lo busca en las fichas de la cafetería. Si no es de la cafetería, usa lo que dice su empaque.</div></li>
   <li><span>3</span><div><b>Lo comparamos con tu perfil</b> y te decimos si es apto, si puede tener trazas o si no es apto para ti.</div></li></ol>
   <div class="card" style="display:flex;flex-direction:column;gap:6px"><b style="font-size:14px">Nivel de certeza</b>
    <div class="t-detail"><span class="conf alta">Alta</span> la ficha de la cafetería o una etiqueta bien leída.</div>
@@ -634,24 +634,20 @@ function startAssist(){clearInterval(assistT);const c=document.createElement('ca
 function startBarcode(){closeAnySheet();if('BarcodeDetector' in window){try{detector=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']})}catch(e){detector=null}}
   if(!detector){altSheet(true);return}barMode=true;stopCam();view='camara';renderCam()}
 function closeAnySheet(){phone.querySelectorAll('.sheet:not(.res)').forEach(n=>{n.remove()});phone.querySelectorAll('.backdrop').forEach(n=>n.remove())}
-let CAT=null;
-function loadCat(){if(CAT)return Promise.resolve(CAT);return fetch('catalogo.json').then(r=>r.json()).then(d=>{CAT=d.productos.map(p=>{let name=p.nombre,brand=d.cafeteria;const m=name.match(/^(.*)\s*\(([^)]+)\)\s*$/);if(m){name=m[1].trim();brand=m[2].trim()}return {name,brand,contains:p.contiene||[],may:(p.puede_contener||[]).filter(a=>!(p.contiene||[]).includes(a)),ing:p.ingredientes,price:p.precio,fuente:'cafeteria',conf:'alta',ai:false,others:[]}});return CAT}).catch(()=>[])}
+let CAT=null;setTimeout(()=>loadCat(),0);
+let CAT_DATE='';
+function loadCat(){if(CAT)return Promise.resolve(CAT);return fetch('catalogo.json').then(r=>r.json()).then(d=>{if(d.actualizado){const [y,m,dd]=d.actualizado.split('-').map(Number);CAT_DATE=new Date(y,m-1,dd).toLocaleDateString('es-PE',{day:'numeric',month:'short',year:'numeric'})}CAT=d.productos.map(p=>{let name=p.nombre,brand=d.cafeteria;const m=name.match(/^(.*)\s*\(([^)]+)\)\s*$/);if(m){name=m[1].trim();brand=m[2].trim()}return {name,brand,contains:p.contiene||[],may:(p.puede_contener||[]).filter(a=>!(p.contiene||[]).includes(a)),ing:p.ingredientes,price:p.precio,fuente:'cafeteria',conf:'alta',ai:false,others:[]}});return CAT}).catch(()=>[])}
 function altSheet(codeFirst){
-  const {sh,close}=miniSheet(`<div class="body" style="padding-bottom:4px"><h2 class="h-sheet">Busca el producto de otra forma</h2>
+  const {sh,close}=miniSheet(`<div class="body" style="padding-bottom:4px"><h2 class="h-sheet">Busca el producto por su nombre</h2>
    <label class="search" id="abox">${I.search}<input id="aq" type="text" placeholder="Escribe su nombre (ej. empanada)" autocomplete="off" enterkeyhint="search"></label>
    <div class="list" id="ares"><div class="empty">Busca entre los productos de la cafetería.</div></div>
-   <div class="altbox">
-    <button class="alt" data-act="barcode"><span class="ai">${I.barcode('currentColor')}</span><span>Escanear el código de barras<small>Para productos empaquetados</small></span></button>
-    <div id="codebox" ${codeFirst?'':'hidden'}><label class="search">${I.barcode('#6b6359')}<input id="acode" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Escribe los números del código" maxlength="14"></label><button class="btn btn-s" data-act="find-code" style="margin-top:8px">Buscar código</button></div>
-   </div></div><div class="foot"><button class="btn btn-s" data-close>Volver</button></div>`);
-  if(codeFirst){const t=sh.querySelector('.alt small');t.textContent='Tu navegador no puede leerlo con la cámara: escribe los números';setTimeout(()=>$('#acode')?.focus(),350)}
+  </div><div class="foot"><button class="btn btn-s" data-close>Volver</button></div>`);
+  
   const inp=sh.querySelector('#aq'),res=sh.querySelector('#ares');
   inp.oninput=async()=>{const q=norm(inp.value);if(q.length<2){res.innerHTML='<div class="empty">Busca entre los productos de la cafetería.</div>';return}
     const c=await loadCat();const ws=q.split(/\s+/).filter(w=>w.length>1&&!['de','con','la','el','y'].includes(w));const hits=c.filter(p=>{const t=norm(p.name+' '+p.brand);return ws.every(w=>t.includes(w))}).slice(0,8);
-    res.innerHTML=hits.length?hits.map((p,i)=>`<button class="opt" data-hit="${c.indexOf(p)}"><span class="grow"><span style="display:block">${esc(p.name)}</span><span class="t-cap" style="font-weight:400">${esc(p.brand)}</span></span>${I.chev}</button>`).join(''):`<div class="empty">No encontramos “${esc(inp.value)}”. Prueba con su código de barras.</div>`;
+    res.innerHTML=hits.length?hits.map((p,i)=>`<button class="opt" data-hit="${c.indexOf(p)}"><span class="grow"><span style="display:block">${esc(p.name)}</span><span class="t-cap" style="font-weight:400">${esc(p.brand)}</span></span>${I.chev}</button>`).join(''):`<div class="empty">No encontramos “${esc(inp.value)}”. Prueba con otra palabra o pregunta en caja.</div>`;
     res.querySelectorAll('[data-hit]').forEach(b=>b.onclick=()=>{const p=Object.assign({},c[+b.dataset.hit]);close();stageResult(p,null)})};
-  sh.querySelector('[data-act="find-code"]').onclick=()=>{const v=($('#acode').value||'').replace(/\D/g,'');if(v.length<8){toast('El código tiene 8 a 13 números');return}close();lookupCode(v)};
-  const bc=sh.querySelector('[data-act="barcode"]');bc.onclick=()=>{if('BarcodeDetector' in window)startBarcode();else{sh.querySelector('#codebox').hidden=false;$('#acode').focus()}};
 }
 const OFFMAP={'en:milk':'lacteos','en:gluten':'gluten','en:eggs':'huevo','en:peanuts':'mani','en:nuts':'frutos-secos','en:soybeans':'soya','en:fish':'pescado','en:crustaceans':'mariscos','en:molluscs':'moluscos','en:sesame-seeds':'ajonjoli','en:mustard':'mostaza','en:celery':'apio','en:sulphur-dioxide-and-sulphites':'sulfitos','en:lupin':'altramuz'};
 function stageResult(p,img){stopCam();scanTok++;barMode=false;view='camara';photoURL=img;
@@ -684,7 +680,7 @@ function openMod(){
   const sh=document.createElement('div');sh.className='sheet mod';
   sh.innerHTML=`<div class="grab"><i></i></div><div class="body">
    <div class="banner">Solo para el entrevistador · no es parte de la app</div>
-   <button class="card row" data-act="ai-mode" style="text-align:left;width:100%"><div class="grow"><div style="font-size:14px;font-weight:700">Reconocimiento real</div><div class="t-cap" style="margin-top:2px">${backendOn()?'La IA (Gemini vía Supabase) identifica el producto de la foto.':sampleFn?'Claude identifica el producto de la foto.':'No disponible en esta vista; se usa el modo demo.'}</div></div><span class="switch ${S.ai&&(sampleFn||backendOn())?'on':''}"></span></button>
+   <button class="card row" data-act="ai-mode" style="text-align:left;width:100%"><div class="grow"><div style="font-size:14px;font-weight:700">Reconocimiento real</div><div class="t-cap" style="margin-top:2px">${backendOn()?'La IA identifica el producto de la foto.':sampleFn?'Claude identifica el producto de la foto.':'No disponible en esta vista; se usa el modo demo.'}</div></div><span class="switch ${S.ai&&(sampleFn||backendOn())?'on':''}"></span></button>
    ${lastScan?`<div class="t-cap" style="padding:8px 12px;border-radius:10px;background:${lastScan.ok?'var(--grn-b)':'var(--red-b)'}">Último escaneo: ${(lastScan.ms/1000).toFixed(1)} s · ${esc(lastScan.msg)}</div>`:''}
    <h2 class="h-sheet">Modo demo: ¿qué snack mostrar?</h2>
    <p class="t-body">Se usa si apagas el reconocimiento real o si la IA no está disponible.</p>
