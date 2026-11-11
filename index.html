@@ -432,7 +432,14 @@ async function toggleTorch(btn){
 }
 function shoot(){
   const v=$('#cam video');let url=null;
-  if(camStream&&v&&v.videoWidth){const sw=v.videoWidth/digi,sh=v.videoHeight/digi,sx=(v.videoWidth-sw)/2,sy=(v.videoHeight-sh)/2;const c=document.createElement('canvas');const sc=Math.min(1,1024/Math.max(sw,sh));c.width=sw*sc;c.height=sh*sc;c.getContext('2d').drawImage(v,sx,sy,sw,sh,0,0,c.width,c.height);url=c.toDataURL('image/jpeg',.82)}
+  if(camStream&&v&&v.videoWidth){let sw=v.videoWidth/digi,sh=v.videoHeight/digi,sx=(v.videoWidth-sw)/2,sy=(v.videoHeight-sh)/2;
+    /* recorta la foto al marco blanco (con un poco de margen) para analizar solo ese producto */
+    try{const fd=$('#cam .finder');if(fd){const vr=v.getBoundingClientRect(),fr=fd.getBoundingClientRect();const k=Math.max(vr.width/v.videoWidth,vr.height/v.videoHeight);
+      const ox=vr.left+(vr.width-v.videoWidth*k)/2,oy=vr.top+(vr.height-v.videoHeight*k)/2;const m=.12;
+      let x0=(fr.left-fr.width*m-ox)/k,y0=(fr.top-fr.height*m-oy)/k,x1=(fr.right+fr.width*m-ox)/k,y1=(fr.bottom+fr.height*m-oy)/k;
+      x0=Math.max(0,x0);y0=Math.max(0,y0);x1=Math.min(v.videoWidth,x1);y1=Math.min(v.videoHeight,y1);
+      if(x1-x0>40&&y1-y0>40){sx=x0;sy=y0;sw=x1-x0;sh=y1-y0}}}catch(e){}
+const c=document.createElement('canvas');const sc=Math.min(1,1024/Math.max(sw,sh));c.width=sw*sc;c.height=sh*sc;c.getContext('2d').drawImage(v,sx,sy,sw,sh,0,0,c.width,c.height);url=c.toDataURL('image/jpeg',.82)}
   const f=document.createElement('div');f.className='flash';$('#cam').appendChild(f);
   if(url)analyze(url);else $('#fileCam').click();
 }
@@ -452,7 +459,7 @@ Responde SOLO con un objeto JSON, sin texto adicional:
 async function dataURLtoBlob(u){const [m,b]=u.split(',');const mime=(m.match(/data:(.*?);/)||[,'image/jpeg'])[1];const bin=atob(b);const arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);return new Blob([arr],{type:mime})}
 function toProduct(j,via){
   if(!j||j.reconocido===false)return {unknown:true,ai:true,via,name:'No reconocido'};
-  if(Array.isArray(j.productos)&&j.productos.length>1)return {multi:true,ai:true,via,name:'Vitrina',items:j.productos.map(x=>Object.assign(toProduct(Object.assign({},x,{confianza:j.confianza}),via)))};
+  if(Array.isArray(j.productos)&&j.productos.length>1)return {multi:true,ai:true,via,name:'Vitrina',main:(j.productos.findIndex(x=>x&&x.principal)>=0?j.productos.findIndex(x=>x&&x.principal):null),items:j.productos.map(x=>Object.assign(toProduct(Object.assign({},x,{confianza:j.confianza}),via)))};
   const SYN={leche:'lacteos',lactosa:'lacteos',lacteo:'lacteos',caseina:'lacteos',trigo:'gluten',cebada:'gluten',centeno:'gluten',avena:'gluten',huevos:'huevo',cacahuate:'mani',cacahuete:'mani',nueces:'frutos-secos','frutos secos':'frutos-secos',soja:'soya',sesamo:'ajonjoli',crustaceos:'mariscos',sulfito:'sulfitos'};
   const clean=a=>Array.isArray(a)?[...new Set(a.map(x=>{const k=String(x).toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'');return SYN[k]||k}).filter(x=>KEYS.includes(x)))]:[];
   const c=clean(j.contiene);
@@ -493,7 +500,7 @@ function analyze(url){
 }
 let vitrina=null;
 function showResult(p){
-  if(p.multi){vitrina=p;showVitrina();return}
+  if(p.multi){vitrina=p;if(p.main!=null&&p.items[p.main]){const it=p.items[p.main];it.fromVit=true;it.also=p.items.filter(x=>x!==it).map(x=>x.name);showResult(it);return}showVitrina();return}
   const s=p;const k=S.snack;result=verdict(p);if(!s.when)s.when=dateNow();LABEL_SRC=s.img||photoURL;LABEL_OWN=!s.img;
   const entry={id:Date.now(),k,name:s.unknown?'No reconocido':s.name,v:result.v,time:dateNow(),photo:null,big:null,p:s,r:result};
   S.history.unshift(entry);S.history=S.history.slice(0,30);save();
@@ -535,6 +542,7 @@ function buildSheet(s,r,fromHist){
   sh.innerHTML=`<div class="grab"><i></i></div><div class="body">
     <div class="row hd" style="gap:16px">${face(v)}<div class="grow"><h2 class="h-sheet" style="color:${col[0]}">${title}</h2><div class="t-detail">${s.unknown?'No hay coincidencias':esc(s.name)+(s.brand?' · '+esc(s.brand):'')+(s.price!=null?' · S/ '+Number(s.price).toFixed(2):'')}</div></div></div>
     <div class="reason" style="background:${col[1]};color:${col[0]}">${reason}</div>
+    ${s.also&&s.also.length?`<button class="link" data-act="back-vit" style="text-align:left;font-size:14px">También vimos en la foto: ${esc(s.also.slice(0,3).join(", "))}${s.also.length>3?"…":""}</button>`:""}
     ${s.unknown?`<div><p class="overline">Para la próxima foto</p><div class="t-body" style="color:var(--tx)">• Acércate y evita los reflejos del vidrio<br>• Que se vea el nombre del empaque<br>• O búscalo por su nombre</div></div>`:
     `<div><p class="overline">Alérgenos de este snack</p><div>${rows}</div></div>
      <details><summary class="link">Ver ingredientes</summary><p class="t-detail" style="margin:4px 0 0">${esc(s.ing||"Sin detalle de ingredientes.")}</p></details>
